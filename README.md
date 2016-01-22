@@ -1,4 +1,4 @@
-## Java Client for DimensionData Cloud API 2.1
+## Java Client for DimensionData Cloud API 2
 
 ### API Documentation
 https://community.opsourcecloud.net/Browse.jsp?id=e5b1a66815188ad439f76183b401f026
@@ -9,18 +9,18 @@ Java 7
 
 ### Maven Configuration
 ```xml
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
+<repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
 
-	<dependency>
-        <groupId>com.github.DimensionDataIreland</groupId>
-    	<artifactId>dimensiondata-cloud-api</artifactId>
-    	<version>2.1.1</version>
-    </dependency>
+<dependency>
+  <groupId>com.github.DimensionDataCBUSydney</groupId>
+  <artifactId>dimensiondata-cloud-java-client</artifactId>
+  <version>2.1.2</version>
+</dependency>
 ```
 
 ### Java Example
@@ -44,7 +44,7 @@ same commands on the fly.
 The following is an example of a script that prints all the datacenters and then the
 network domains of a specific datacenter:
 ```javascript
-#!/usr/bin/env jjs -scripting -J-Djava.class.path=dimensiondata-cloud-api-2.1.1-SNAPSHOT-jar-with-dependencies.jar
+#!/usr/bin/env jjs -scripting -J-Djava.class.path=dimensiondata-cloud-api-2.1.2-jar-with-dependencies.jar
 
 var DimensionData = new JavaImporter(
   com.dimensiondata.cloud.client,
@@ -67,7 +67,7 @@ with (DimensionData) {
 ```
 To execute a script on the command line (jjs executable is included in Java 8):
 ```bash
-jjs -J-Djava.class.path=dimensiondata-cloud-api-2.1.1-jar-with-dependencies.jar my-script.js
+jjs -J-Djava.class.path=dimensiondata-cloud-api-2.1.2-jar-with-dependencies.jar my-script.js
 ```
 The Jar that include all the dependencies can be downloaded from the Release Page:
-https://github.com/DimensionDataIreland/dimensiondata-cloud-api/releases/download/2.1.1/dimensiondata-cloud-api-2.1.1-jar-with-dependencies.jar
+https://github.com/DimensionDataCBUSydney/dimensiondata-cloud-java-client/releases/download/2.1.2/dimensiondata-cloud-api-2.1.2-jar-with-dependencies.jar
