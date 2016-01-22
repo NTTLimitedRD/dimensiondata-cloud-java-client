@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="urn:didata.com:api:cloud:types"
+           xmlns:cloudapi="urn:didata.com:api:cloud:types"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="1.0">
+
+    <xs:include schemaLocation="general.xsd"/>
+
+    <xs:element name="reservedPrivateIpv4Addresses">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ipv4" type="cloudapi:ReservedPrivateIpv4AddressType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="ReservedPrivateIpv4AddressType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="datacenterId" type="xs:string" use="required"/>
+                <!-- networkId and vlanId are mutually exclusive alternatives. They could have been modelled using
+                "choice" but for payload compactness we have used attributes: -->
+                <xs:attribute name="networkId" type="xs:string"/>
+                <xs:attribute name="vlanId" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:element name="reservedPublicIpv4Addresses">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ip" type="cloudapi:ReservedPublicIpv4AddressType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="ReservedPublicIpv4AddressType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="datacenterId" type="xs:string" use="required"/>
+                <xs:attribute name="ipBlockId" type="xs:string" use="required"/>
+                <!-- networkDomainId and networkId are mutually exclusive alternatives. They could have been modelled
+                using "choice" but for payload compactness we have used attributes: -->
+                <xs:attribute name="networkDomainId" type="xs:string"/>
+                <xs:attribute name="networkId" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:element name="reservePrivateIpv4Address" type="cloudapi:ReservePrivateIpv4AddressType"/>
+    <xs:complexType name="ReservePrivateIpv4AddressType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="networkId" type="xs:string"/>
+                <xs:element name="vlanId" type="xs:string"/>
+            </xs:choice>
+            <xs:element name="ipAddress" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="reserveIpv6Address" type="cloudapi:ReserveIpv6AddressType"/>
+    <xs:complexType name="ReserveIpv6AddressType">
+        <xs:sequence>
+            <xs:element name="vlanId" type="xs:string" minOccurs="1"/>
+            <xs:element name="ipAddress" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="urn:didata.com:api:cloud:types"
+           xmlns:cloudapi="urn:didata.com:api:cloud:types"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="1.0">
+
+    <xs:include schemaLocation="general.xsd"/>
+    <xs:include schemaLocation="server.xsd"/>
+
+    <xs:complexType name="AntiAffinityNetworkInfoType">
+        <xs:choice>
+            <xs:element name="nic">
+                <xs:complexType>
+                    <xs:attribute name="id" type="xs:string" use="required"/>
+                    <xs:attribute name="privateIpv4" type="xs:string" use="required"/>
+                    <xs:attribute name="networkId" type="xs:string" use="required"/>
+                    <xs:attribute name="networkName" type="xs:string" use="required"/>
+                    <xs:attribute name="macAddress" type="xs:string"/>
+                    <xs:attribute name="state" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="networkInfo">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="primaryNic" type="cloudapi:NicType"/>
+                        <xs:element name="additionalNic" type="cloudapi:NicType" minOccurs="0"
+                                    maxOccurs="unbounded"/>
+                    </xs:sequence>
+                    <xs:attribute name="networkDomainId" type="xs:string" use="required"/>
+                    <xs:attribute name="networkDomainName" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="AntiAffinityRuleType">
+        <xs:sequence>
+            <xs:element name="serverSummary" minOccurs="2" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                        <xs:element name="description" type="xs:string" minOccurs="0"/>
+                        <xs:element name="networkingDetails" type="cloudapi:AntiAffinityNetworkInfoType"/>
+                    </xs:sequence>
+                    <xs:attribute name="id" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="state" type="xs:string" use="required"/>
+        <xs:attribute name="created" type="xs:dateTime" use="required"/>
+        <xs:attribute name="datacenterId" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="antiAffinityRules">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="antiAffinityRule" type="cloudapi:AntiAffinityRuleType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

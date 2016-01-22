@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="urn:didata.com:api:cloud:types"
+           xmlns:cloudapi="urn:didata.com:api:cloud:types"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="1.0">
+
+    <xs:include schemaLocation="general.xsd"/>
+
+    <xs:complexType name="DatacenterType">
+        <xs:sequence>
+            <xs:element name="displayName" type="xs:string"/>
+            <xs:element name="city" type="xs:string"/>
+            <xs:element name="state" type="xs:string" minOccurs="0"/>
+            <xs:element name="country" type="xs:string"/>
+            <xs:element name="vpnUrl" type="xs:string"/>
+            <xs:element name="ftpsHost" type="xs:string"/>
+            <xs:element name="networking" type="cloudapi:NetworkingType"/>
+            <xs:element name="hypervisor" type="cloudapi:HypervisorType"/>
+            <xs:element name="backup" type="cloudapi:BackupType" minOccurs="0"/>
+            <xs:element name="consoleAccess" type="cloudapi:ConsoleAccessType" minOccurs="0"/>
+            <xs:element name="monitoring" type="cloudapi:MonitoringType" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="NetworkingType">
+        <xs:sequence>
+            <xs:element name="property" type="cloudapi:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+        <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="HypervisorType">
+        <xs:sequence>
+            <xs:element name="diskSpeed" type="cloudapi:DiskSpeedType" maxOccurs="unbounded"/>
+            <xs:element name="cpuSpeed" type="cloudapi:CpuSpeedType" maxOccurs="unbounded"/>
+            <xs:element name="property" type="cloudapi:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+        <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="DiskSpeedType">
+        <xs:sequence>
+            <xs:element name="displayName" type="xs:string"/>
+            <xs:element name="abbreviation" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="unavailableReason" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="default" type="xs:boolean" use="required"/>
+        <xs:attribute name="available" type="xs:boolean" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="CpuSpeedType">
+        <xs:sequence>
+            <xs:element name="displayName" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="unavailableReason" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="default" type="xs:boolean" use="required"/>
+        <xs:attribute name="available" type="xs:boolean" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="BackupType">
+        <xs:sequence>
+            <xs:element name="property" type="cloudapi:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+        <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="ConsoleAccessType">
+        <xs:sequence>
+            <xs:element name="property" type="cloudapi:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="MonitoringType">
+        <xs:sequence>
+            <xs:element name="property" type="cloudapi:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="datacenters">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="datacenter" type="cloudapi:DatacenterType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

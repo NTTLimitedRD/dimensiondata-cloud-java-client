@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="urn:didata.com:api:cloud:types"
+           xmlns:cloudapi="urn:didata.com:api:cloud:types"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="1.0">
+
+    <xs:element name="response" type="cloudapi:ResponseType"/>
+
+    <xs:complexType name="ResponseType">
+        <xs:sequence>
+            <xs:element name="operation" type="xs:string"/>
+            <xs:element name="responseCode" type="xs:string"/>
+            <xs:element name="message" type="xs:string"/>
+            <xs:element name="info" type="cloudapi:NameValuePairType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="warning" type="cloudapi:NameValuePairType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="error" type="cloudapi:NameValuePairType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="requestId" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="NameValuePairType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <!-- Note: this group is commonly applicable across all successful paged list responses. Refer to the API 2.0
+    documentation for details about Paging and Filtering behaviour -->
+    <xs:attributeGroup name="PagedResultAttributes">
+        <xs:attribute name="pageNumber" type="xs:int"/>
+        <xs:attribute name="pageCount" type="xs:int"/>
+        <xs:attribute name="totalCount" type="xs:int"/>
+        <xs:attribute name="pageSize" type="xs:int"/>
+    </xs:attributeGroup>
+
+    <xs:complexType name="IdType">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="ProgressType">
+        <xs:sequence>
+            <xs:element name="action" type="xs:string"/>
+            <xs:element name="requestTime" type="xs:dateTime"/>
+            <xs:element name="userName" type="xs:string"/>
+            <xs:element name="numberOfSteps" type="xs:int" minOccurs="0"/>
+            <xs:element name="updateTime" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="step" type="cloudapi:ProgressStepType" minOccurs="0"/>
+            <xs:element name="failureReason" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ProgressStepType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="number" type="xs:int"/>
+            <xs:element name="percentComplete" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="IpRangeCidrType">
+        <xs:attribute name="address" type="xs:string" use="required"/>
+        <xs:attribute name="prefixSize" type="xs:int" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="OperatingSystemType">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="displayName" type="xs:string" use="required"/>
+        <xs:attribute name="family" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="PropertyType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="IdAndNameType">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="VmwareToolsType">
+        <xs:attribute name="versionStatus" type="xs:string"/>
+        <xs:attribute name="runningStatus" type="xs:string"/>
+        <xs:attribute name="apiVersion" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="VirtualHardwareType">
+        <xs:attribute name="version" type="xs:string" use="required"/>
+        <xs:attribute name="upToDate" type="xs:boolean" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="CpuType">
+        <xs:attribute name="count" type="xs:unsignedInt" use="required"/>
+        <xs:attribute name="speed" type="xs:string" use="required"/>
+        <xs:attribute name="coresPerSocket" type="xs:unsignedInt" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="DiskType">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="scsiId" type="xs:int" use="required"/>
+        <xs:attribute name="sizeGb" type="xs:int" use="required"/>
+        <xs:attribute name="speed" type="xs:string" use="required"/>
+        <xs:attribute name="state" type="xs:string" use="required"/>
+    </xs:complexType>
+
+</xs:schema>

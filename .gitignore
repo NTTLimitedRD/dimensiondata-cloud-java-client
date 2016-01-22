@@ -1,0 +1,16 @@
+### Java
+*.jar
+hs_err_pid*
+
+### Maven
+target/
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+### JetBrains
+*.iml
+.idea/
+
+### OSX
+.DS_Store

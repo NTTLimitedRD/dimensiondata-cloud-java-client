@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:cloudapi="urn:didata.com:api:cloud:types"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           targetNamespace="urn:didata.com:api:cloud:types"
+           jaxb:version="1.0">
+
+    <xs:include schemaLocation="general.xsd"/>
+    <xs:include schemaLocation="virtuallistener.xsd"/>
+
+    <xs:element name="defaultIrules">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="defaultIrule" type="cloudapi:DefaultIruleType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="DefaultIruleType">
+        <xs:sequence>
+            <xs:element name="irule" type="cloudapi:IdAndNameType"/>
+            <xs:element name="virtualListenerCompatibility" type="cloudapi:VirtualListenerCompatibilityType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:cloudapi="urn:didata.com:api:cloud:types"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           targetNamespace="urn:didata.com:api:cloud:types"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="1.0">
+
+    <xs:include schemaLocation="general.xsd"/>
+
+    <xs:element name="node" type="cloudapi:NodeType"/>
+
+    <xs:complexType name="NodeType">
+        <xs:sequence>
+            <xs:element name="networkDomainId" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:choice>
+                <xs:element name="ipv4Address" type="xs:string"/>
+                <xs:element name="ipv6Address" type="xs:string"/>
+            </xs:choice>
+            <xs:element name="state" type="xs:string"/>
+            <xs:element name="status" type="xs:string"/>
+            <xs:element name="healthMonitor" minOccurs="0">
+                <xs:complexType>
+                    <xs:attribute name="id" type="xs:string" use="required"/>
+                    <xs:attribute name="name" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="connectionLimit" type="xs:nonNegativeInteger"/>
+            <xs:element name="connectionRateLimit" type="xs:nonNegativeInteger"/>
+            <xs:element name="createTime" type="xs:dateTime"/>
+            <!-- Must not be returned in API responses -->
+            <xs:element name="loggingEnabled" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="datacenterId" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="nodes">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="node" type="cloudapi:NodeType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createNode" type="cloudapi:CreateNodeType"/>
+
+    <xs:complexType name="CreateNodeType">
+        <xs:sequence>
+            <xs:element name="networkDomainId" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:choice>
+                <xs:element name="ipv4Address" type="xs:string"/>
+                <xs:element name="ipv6Address" type="xs:string"/>
+            </xs:choice>
+            <xs:element name="status" type="xs:string"/>
+            <xs:element name="healthMonitorId" type="xs:string" minOccurs="0"/>
+            <xs:element name="connectionLimit" type="xs:nonNegativeInteger"/>
+            <xs:element name="connectionRateLimit" type="xs:nonNegativeInteger"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="editNode">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="description" type="xs:string" minOccurs="0" nillable="true"/>
+                <xs:element name="status" type="xs:string" minOccurs="0"/>
+                <xs:element name="healthMonitorId" type="xs:string" minOccurs="0" nillable="true"/>
+                <xs:element name="connectionLimit" type="xs:nonNegativeInteger" minOccurs="0"/>
+                <xs:element name="connectionRateLimit" type="xs:nonNegativeInteger" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteNode" type="cloudapi:IdType"/>
+
+</xs:schema>
