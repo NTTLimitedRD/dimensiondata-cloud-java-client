@@ -12,8 +12,9 @@ import javax.xml.namespace.QName;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public class ServerServiceImpl extends AbstractRestfulService implements ServerService
+public class ServerServiceImpl extends AbstractRestfulService implements ServerService, StateService
 {
     public static final String PARAMETER_ID = "id";
     public static final String PARAMETER_DATACENTER_ID = "datacenterId";
@@ -222,5 +223,32 @@ public class ServerServiceImpl extends AbstractRestfulService implements ServerS
         return httpClient.post("server/upgradeVirtualHardware",
                 Entity.xml("<upgradeVirtualHardware xmlns=\"" + HttpClient.DEFAULT_NAMESPACE + "\" id=\"" + id + "\"/>"),
                 ResponseType.class);
+    }
+
+    @Override
+    public Callable<Boolean> isServerInNormalState(String id)
+    {
+        return new CallableNormalState(this, "server", id);
+    }
+
+    @Override
+    public Callable<Boolean> isServerDeployed(ResponseType responseType)
+    {
+        assertParameterEquals("Operation", "DEPLOY", responseType.getOperation());
+        assertParameterEquals("ResponseCode", "IN_PROGRESS", responseType.getResponseCode());
+        String id = findRequiredNameValuePair("serverId", responseType.getInfo()).getValue();
+        return isServerInNormalState(id);
+    }
+
+    @Override
+    public Callable<Boolean> isServerDeleted(String id)
+    {
+        return new CallableDeletedState(this, "server", id);
+    }
+
+    @Override
+    public String getState(String id)
+    {
+        return getServer(id).getState();
     }
 }

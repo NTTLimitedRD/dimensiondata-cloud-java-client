@@ -12,8 +12,9 @@ import javax.xml.namespace.QName;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public class VlanServiceImpl extends AbstractRestfulService implements VlanService
+public class VlanServiceImpl extends AbstractRestfulService implements VlanService, StateService
 {
     public static final String PARAMETER_ID = "id";
     public static final String PARAMETER_NETWORK_DOMAIN_ID = "networkDomainId";
@@ -99,5 +100,32 @@ public class VlanServiceImpl extends AbstractRestfulService implements VlanServi
         return httpClient.post("network/expandVlan",
                 new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "expandVlan"), ExpandVlanType.class, expandVlan),
                 ResponseType.class);
+    }
+
+    @Override
+    public String getState(String id)
+    {
+        return getVlan(id).getState();
+    }
+
+    @Override
+    public Callable<Boolean> isVlanInNormalState(String id)
+    {
+        return new CallableNormalState(this, "vlan", id);
+    }
+
+    @Override
+    public Callable<Boolean> isVlanDeployed(ResponseType responseType)
+    {
+        assertParameterEquals("Operation", "DEPLOY_VLAN", responseType.getOperation());
+        assertParameterEquals("ResponseCode", "IN_PROGRESS", responseType.getResponseCode());
+        String id = findRequiredNameValuePair("vlanId", responseType.getInfo()).getValue();
+        return isVlanInNormalState(id);
+    }
+
+    @Override
+    public Callable<Boolean> isVlanDeleted(String id)
+    {
+        return new CallableDeletedState(this, "vlan", id);
     }
 }

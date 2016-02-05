@@ -2,6 +2,8 @@ package com.dimensiondata.cloud.client;
 
 import com.dimensiondata.cloud.client.model.*;
 
+import java.util.concurrent.Callable;
+
 public interface ServerService
 {
     ResponseType deployServer(DeployServerType deployServer);
@@ -37,4 +39,10 @@ public interface ServerService
     ResponseType reconfigureServer(ReconfigureServerType reconfigureServer);
 
     ResponseType upgradeVirtualHardware(String id);
+
+    Callable<Boolean> isServerInNormalState(String id);
+
+    Callable<Boolean> isServerDeployed(ResponseType responseType);
+
+    Callable<Boolean> isServerDeleted(String id);
 }

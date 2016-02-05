@@ -12,8 +12,9 @@ import javax.xml.namespace.QName;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public class NetworkDomainServiceImpl extends AbstractRestfulService implements NetworkDomainService
+public class NetworkDomainServiceImpl extends AbstractRestfulService implements NetworkDomainService, StateService
 {
     public static final String PARAMETER_ID = "id";
     public static final String PARAMETER_DATACENTER_ID = "datacenterId";
@@ -84,5 +85,32 @@ public class NetworkDomainServiceImpl extends AbstractRestfulService implements 
         return httpClient.post("network/deleteNetworkDomain",
                 Entity.xml("<deleteNetworkDomain xmlns=\"" + HttpClient.DEFAULT_NAMESPACE + "\" id=\"" + id + "\"/>"),
                 ResponseType.class);
+    }
+
+    @Override
+    public String getState(String id)
+    {
+        return getNetworkDomain(id).getState();
+    }
+
+    @Override
+    public Callable<Boolean> isNetworkDomainInNormalState(String id)
+    {
+        return new CallableNormalState(this, "networkDomain", id);
+    }
+
+    @Override
+    public Callable<Boolean> isNetworkDomainDeployed(ResponseType responseType)
+    {
+        assertParameterEquals("Operation", "DEPLOY_NETWORK_DOMAIN", responseType.getOperation());
+        assertParameterEquals("ResponseCode", "IN_PROGRESS", responseType.getResponseCode());
+        String id = findRequiredNameValuePair("networkDomainId", responseType.getInfo()).getValue();
+        return isNetworkDomainInNormalState(id);
+    }
+
+    @Override
+    public Callable<Boolean> isNetworkDomainDeleted(String id)
+    {
+        return new CallableDeletedState(this, "networkDomain", id);
     }
 }
