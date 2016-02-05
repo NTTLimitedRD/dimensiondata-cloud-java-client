@@ -4,7 +4,6 @@
 https://community.opsourcecloud.net/Browse.jsp?id=e5b1a66815188ad439f76183b401f026
 
 ### Requirements
-
 Java 7
 
 ### Maven Configuration
@@ -71,3 +70,60 @@ jjs -J-Djava.class.path=dimensiondata-cloud-api-2.1.2-jar-with-dependencies.jar 
 ```
 The Jar that include all the dependencies can be downloaded from the Release Page:
 https://github.com/DimensionDataCBUSydney/dimensiondata-cloud-java-client/releases/download/2.1.2/dimensiondata-cloud-api-2.1.2-jar-with-dependencies.jar
+
+### Asynchronous operations
+Methods returning a Callable implementation can be used to wait for asynchronous operations completion.
+In the following examples we're using the [Awaitility library](https://github.com/jayway/awaitility).
+
+Deploy Network Domain:
+```java
+ResponseType deployNetworkDomainResponse = cloud.networkDomain().deployNetworkDomain(deployNetworkDomain);
+String networkDomainId = cloud.networkDomain().getIdFromDeployResponse(deployNetworkDomainResponse);
+await().atMost(5, TimeUnit.MINUTES)
+  .pollDelay(30, TimeUnit.SECONDS)
+  .until(cloud.networkDomain().isNetworkDomainInNormalState(networkDomainId));
+```
+Edit Network Domain:
+```java
+cloud.networkDomain().editNetworkDomain(editNetworkDomain);
+await().atMost(5, TimeUnit.MINUTES)
+  .pollDelay(30, TimeUnit.SECONDS)
+  .until(cloud.networkDomain().isNetworkDomainInNormalState(networkDomainId));
+```
+Delete Network Domain:
+```java
+cloud.networkDomain().deleteNetworkDomain(networkDomainId);
+await().atMost(5, TimeUnit.MINUTES)
+  .pollDelay(30, TimeUnit.SECONDS)
+  .until(cloud.networkDomain().isNetworkDomainDeleted(networkDomainId));
+```
+Deploy Vlan:
+```java
+ResponseType deployVlanResponse = cloud.vlan().deployVlan(deployVlan);
+String vlanId = cloud.vlan().getIdFromDeployResponse(deployVlanResponse);
+await().atMost(5, TimeUnit.MINUTES)
+  .pollDelay(30, TimeUnit.SECONDS)
+  .until(cloud.vlan().isVlanInNormalState(vlanId));
+```
+Delete Vlan:
+```java
+cloud.vlan().deleteVlan(vlanId);
+await().atMost(5, TimeUnit.MINUTES)
+  .pollDelay(30, TimeUnit.SECONDS)
+  .until(cloud.vlan().isVlanDeleted(vlanId));
+```
+Deploy Server:
+```java
+ResponseType deployServerResponse = cloud.server().deployServer(deployServer);
+String serverId = cloud.server().getIdFromDeployResponse(deployServerResponse);
+await().atMost(5, TimeUnit.MINUTES)
+  .pollDelay(30, TimeUnit.SECONDS)
+  .until(cloud.server().isServerInNormalState(serverId));
+```
+Delete Server:
+```java
+cloud.server().deleteServer(serverId);
+await().atMost(5, TimeUnit.MINUTES)
+  .pollDelay(30, TimeUnit.SECONDS)
+  .until(cloud.server().isServerDeleted(serverId));
+```

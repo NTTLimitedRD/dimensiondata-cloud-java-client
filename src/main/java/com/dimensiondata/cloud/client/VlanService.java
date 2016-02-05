@@ -18,9 +18,9 @@ public interface VlanService
 
     ResponseType expandVlan(ExpandVlanType expandVlan);
 
-    Callable<Boolean> isVlanInNormalState(String id);
+    String getIdFromDeployResponse(ResponseType response);
 
-    Callable<Boolean> isVlanDeployed(ResponseType responseType);
+    Callable<Boolean> isVlanInNormalState(String id);
 
     Callable<Boolean> isVlanDeleted(String id);
 }

@@ -16,9 +16,9 @@ public interface NetworkDomainService
 
     ResponseType deleteNetworkDomain(String id);
 
-    Callable<Boolean> isNetworkDomainInNormalState(String id);
+    String getIdFromDeployResponse(ResponseType response);
 
-    Callable<Boolean> isNetworkDomainDeployed(ResponseType responseType);
+    Callable<Boolean> isNetworkDomainInNormalState(String id);
 
     Callable<Boolean> isNetworkDomainDeleted(String id);
 }

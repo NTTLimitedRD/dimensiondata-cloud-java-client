@@ -226,18 +226,17 @@ public class ServerServiceImpl extends AbstractRestfulService implements ServerS
     }
 
     @Override
-    public Callable<Boolean> isServerInNormalState(String id)
+    public String getIdFromDeployResponse(ResponseType response)
     {
-        return new CallableNormalState(this, "server", id);
+        assertParameterEquals("Operation", "DEPLOY", response.getOperation());
+        assertParameterEquals("ResponseCode", "IN_PROGRESS", response.getResponseCode());
+        return findRequiredNameValuePair("serverId", response.getInfo()).getValue();
     }
 
     @Override
-    public Callable<Boolean> isServerDeployed(ResponseType responseType)
+    public Callable<Boolean> isServerInNormalState(String id)
     {
-        assertParameterEquals("Operation", "DEPLOY", responseType.getOperation());
-        assertParameterEquals("ResponseCode", "IN_PROGRESS", responseType.getResponseCode());
-        String id = findRequiredNameValuePair("serverId", responseType.getInfo()).getValue();
-        return isServerInNormalState(id);
+        return new CallableNormalState(this, "server", id);
     }
 
     @Override

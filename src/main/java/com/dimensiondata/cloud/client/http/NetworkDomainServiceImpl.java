@@ -88,6 +88,14 @@ public class NetworkDomainServiceImpl extends AbstractRestfulService implements 
     }
 
     @Override
+    public String getIdFromDeployResponse(ResponseType response)
+    {
+        assertParameterEquals("Operation", "DEPLOY_NETWORK_DOMAIN", response.getOperation());
+        assertParameterEquals("ResponseCode", "IN_PROGRESS", response.getResponseCode());
+        return findRequiredNameValuePair("networkDomainId", response.getInfo()).getValue();
+    }
+
+    @Override
     public String getState(String id)
     {
         return getNetworkDomain(id).getState();
@@ -97,15 +105,6 @@ public class NetworkDomainServiceImpl extends AbstractRestfulService implements 
     public Callable<Boolean> isNetworkDomainInNormalState(String id)
     {
         return new CallableNormalState(this, "networkDomain", id);
-    }
-
-    @Override
-    public Callable<Boolean> isNetworkDomainDeployed(ResponseType responseType)
-    {
-        assertParameterEquals("Operation", "DEPLOY_NETWORK_DOMAIN", responseType.getOperation());
-        assertParameterEquals("ResponseCode", "IN_PROGRESS", responseType.getResponseCode());
-        String id = findRequiredNameValuePair("networkDomainId", responseType.getInfo()).getValue();
-        return isNetworkDomainInNormalState(id);
     }
 
     @Override

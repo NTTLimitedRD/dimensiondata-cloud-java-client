@@ -40,9 +40,9 @@ public interface ServerService
 
     ResponseType upgradeVirtualHardware(String id);
 
-    Callable<Boolean> isServerInNormalState(String id);
+    String getIdFromDeployResponse(ResponseType response);
 
-    Callable<Boolean> isServerDeployed(ResponseType responseType);
+    Callable<Boolean> isServerInNormalState(String id);
 
     Callable<Boolean> isServerDeleted(String id);
 }

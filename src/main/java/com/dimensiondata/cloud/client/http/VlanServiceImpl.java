@@ -103,6 +103,14 @@ public class VlanServiceImpl extends AbstractRestfulService implements VlanServi
     }
 
     @Override
+    public String getIdFromDeployResponse(ResponseType response)
+    {
+        assertParameterEquals("Operation", "DEPLOY_VLAN", response.getOperation());
+        assertParameterEquals("ResponseCode", "IN_PROGRESS", response.getResponseCode());
+        return findRequiredNameValuePair("vlanId", response.getInfo()).getValue();
+    }
+
+    @Override
     public String getState(String id)
     {
         return getVlan(id).getState();
@@ -112,15 +120,6 @@ public class VlanServiceImpl extends AbstractRestfulService implements VlanServi
     public Callable<Boolean> isVlanInNormalState(String id)
     {
         return new CallableNormalState(this, "vlan", id);
-    }
-
-    @Override
-    public Callable<Boolean> isVlanDeployed(ResponseType responseType)
-    {
-        assertParameterEquals("Operation", "DEPLOY_VLAN", responseType.getOperation());
-        assertParameterEquals("ResponseCode", "IN_PROGRESS", responseType.getResponseCode());
-        String id = findRequiredNameValuePair("vlanId", responseType.getInfo()).getValue();
-        return isVlanInNormalState(id);
     }
 
     @Override
