@@ -1,0 +1,4 @@
+com.dimensiondata.cloud.client
+com.dimensiondata.cloud.client.http
+com.dimensiondata.cloud.client.http.vendor
+com.dimensiondata.cloud.client.model
