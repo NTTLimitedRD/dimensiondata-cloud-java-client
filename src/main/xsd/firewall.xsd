@@ -33,23 +33,22 @@
 
     <xs:complexType name="IpAndPortFilterType">
         <xs:sequence>
-            <!-- ip is required -->
-            <xs:element name="ip">
-                <xs:complexType>
-                    <!-- address can be an IPv4 or IPv6 IP (with a prefix size if it is a Network Address rather than a specific IP) or the String "ANY" -->
-                    <xs:attribute name="address" type="xs:string" use="required"/>
-                    <xs:attribute name="prefixSize" type="xs:int"/>
-                </xs:complexType>
-            </xs:element>
+            <xs:choice>
+                <xs:element name="ipAddressList" type="cloudapi:IpAddressListSummaryType"/>
+                <xs:element name="ip">
+                    <xs:complexType>
+                        <!-- address can be an IPv4 or IPv6 IP (with a prefix size if it is a Network Address rather than a specific IP) or the String "ANY" -->
+                        <xs:attribute name="address" type="xs:string" use="required"/>
+                        <xs:attribute name="prefixSize" type="xs:int"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
 
             <!-- port is optional, absence indicates "ANY" port-->
-            <xs:element name="port" minOccurs="0">
-                <xs:complexType>
-                    <xs:attribute name="begin" type="xs:int" use="required"/>
-                    <!-- if end is present, it implies a port range -->
-                    <xs:attribute name="end" type="xs:int"/>
-                </xs:complexType>
-            </xs:element>
+            <xs:choice minOccurs="0">
+                <xs:element name="portList" type="cloudapi:PortListSummaryType"/>
+                <xs:element name="port" type="cloudapi:PortRangeType"/>
+            </xs:choice>
         </xs:sequence>
     </xs:complexType>
 
@@ -74,8 +73,8 @@
             <xs:element name="ipVersion" type="xs:string"/>
             <!-- TCP, UDP, ICMP, IP -->
             <xs:element name="protocol" type="xs:string"/>
-            <xs:element name="source" type="cloudapi:IpAndPortFilterType"/>
-            <xs:element name="destination" type="cloudapi:IpAndPortFilterType"/>
+            <xs:element name="source" type="cloudapi:IpAndPortType"/>
+            <xs:element name="destination" type="cloudapi:IpAndPortType"/>
             <xs:element name="enabled" type="xs:boolean"/>
             <xs:element name="placement" type="cloudapi:RulePlacementType"/>
         </xs:sequence>
@@ -119,6 +118,27 @@
             <xs:element name="placement" type="cloudapi:RulePlacementType" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="IpAndPortType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="ipAddressListId" type="xs:string"/>
+                <xs:element name="ip">
+                    <xs:complexType>
+                        <!-- address can be an IPv4 or IPv6 IP (with a prefix size if it is a Network Address rather than a specific IP) or the String "ANY" -->
+                        <xs:attribute name="address" type="xs:string" use="required"/>
+                        <xs:attribute name="prefixSize" type="xs:int"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+
+            <!-- port is optional, absence indicates "ANY" port-->
+            <xs:choice minOccurs="0">
+                <xs:element name="portListId" type="xs:string"/>
+                <xs:element name="port" type="cloudapi:PortRangeType"/>
+            </xs:choice>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:element name="createFirewallRule" type="cloudapi:CreateFirewallRuleType"/>

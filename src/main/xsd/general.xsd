@@ -105,4 +105,35 @@
         <xs:attribute name="state" type="xs:string" use="required"/>
     </xs:complexType>
 
+    <xs:complexType name="IpAddressListSummaryType">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="PortListSummaryType">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="PortRangeType">
+        <xs:attribute name="begin" type="xs:unsignedShort" use="required"/>
+        <!-- if end is present, it implies a port range -->
+        <xs:attribute name="end" type="xs:unsignedShort"/>
+    </xs:complexType>
+    <xs:complexType name="EmailConfigurationType">
+        <xs:sequence>
+            <xs:element name="body" type="xs:string"/>
+            <xs:element name="htmlBody" type="xs:string" minOccurs="0"/>
+            <xs:element name="from" type="xs:string"/>
+            <xs:element name="subject" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="UrlType">
+        <xs:sequence>
+            <xs:element name="label" type="xs:string"/>
+            <xs:element name="url" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+	
 </xs:schema>

@@ -49,7 +49,7 @@
                 <xs:element name="clientClonePoolId" type="xs:string" minOccurs="0" nillable="true"/>
                 <xs:element name="persistenceProfileId" type="xs:string" minOccurs="0" nillable="true"/>
                 <xs:element name="fallbackPersistenceProfileId" type="xs:string" minOccurs="0" nillable="true"/>
-                <xs:element name="optimizationProfile" minOccurs="0" maxOccurs="1" nillable="true">
+                <xs:element name="optimizationProfile" minOccurs="0" nillable="true">
                     <xs:simpleType>
                         <xs:list itemType="xs:string"/>
                     </xs:simpleType>

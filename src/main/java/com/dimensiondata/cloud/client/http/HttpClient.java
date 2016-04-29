@@ -24,7 +24,7 @@ import static org.glassfish.jersey.client.authentication.HttpAuthenticationFeatu
 
 public class HttpClient
 {
-    public static final String API_VERSION = "2.1";
+    public static final String API_VERSION = "2.2";
     public static final String DEFAULT_NAMESPACE = "urn:didata.com:api:cloud:types";
     private static final MediaType MEDIA_TYPE = MediaType.APPLICATION_XML_TYPE;
     private static final JAXBContext JAXB_CONTEXT;

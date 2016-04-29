@@ -30,6 +30,24 @@
         </xs:simpleContent>
     </xs:complexType>
 
+    <xs:element name="reservedIpv6Addresses">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reservedIpv6Address" type="cloudapi:ReservedIpv6AddressType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="ReservedIpv6AddressType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                 <xs:attribute name="datacenterId" type="xs:string" use="required" />
+                 <xs:attribute name="vlanId" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
     <xs:element name="reservedPublicIpv4Addresses">
         <xs:complexType>
             <xs:sequence>
@@ -66,8 +84,27 @@
     <xs:element name="reserveIpv6Address" type="cloudapi:ReserveIpv6AddressType"/>
     <xs:complexType name="ReserveIpv6AddressType">
         <xs:sequence>
-            <xs:element name="vlanId" type="xs:string" minOccurs="1"/>
+            <xs:element name="vlanId" type="xs:string"/>
             <xs:element name="ipAddress" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="unreservePrivateIpv4Address" type="cloudapi:UnreservePrivateIpv4AddressType"/>
+    <xs:complexType name="UnreservePrivateIpv4AddressType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="networkId" type="xs:string"/>
+                <xs:element name="vlanId" type="xs:string"/>
+            </xs:choice>
+            <xs:element name="ipAddress" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="unreserveIpv6Address" type="cloudapi:UnreserveIpv6AddressType"/>
+    <xs:complexType name="UnreserveIpv6AddressType">
+        <xs:sequence>
+            <xs:element name="vlanId" type="xs:string"/>
+            <xs:element name="ipAddress" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 

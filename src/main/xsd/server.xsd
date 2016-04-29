@@ -209,7 +209,7 @@
 
     <xs:element name="changeServerMonitoringPlan" type="cloudapi:ChangeServerMonitoringPlanType"/>
 
-    <xs:complexType name="AddLocalDiskType">
+    <xs:complexType name="AddDiskType">
         <xs:sequence>
             <xs:element name="sizeGb" type="xs:int"/>
             <xs:element name="speed" type="xs:string" minOccurs="0"/>
@@ -218,7 +218,9 @@
         <xs:attribute name="id" type="xs:string" use="required"/>
     </xs:complexType>
 
-    <xs:element name="addLocalDisk" type="cloudapi:AddLocalDiskType"/>
+    <xs:element name="addDisk" type="cloudapi:AddDiskType"/>
+
+    <xs:element name="removeDisk" type="cloudapi:IdType"/>
 
     <xs:element name="reconfigureServer" type="cloudapi:ReconfigureServerType"/>
 
@@ -233,4 +235,39 @@
     </xs:complexType>
 
     <xs:element name="upgradeVirtualHardware" type="cloudapi:IdType"/>
+
+    <xs:complexType name="NicWithSecurityGroupType">
+        <xs:sequence>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="ipv4Address" type="xs:string"/>
+            <xs:element name="ipv6Address" type="xs:string" minOccurs="0"/>
+            <xs:element name="state" type="xs:string"/>
+            <xs:element name="serverId" type="xs:string"/>
+            <xs:element name="serverName" type="xs:string"/>
+            <xs:element name="serverDescription" type="xs:string" minOccurs="0"/>
+            <xs:element name="securityGroup" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                        <xs:element name="description" type="xs:string" minOccurs="0"/>
+                        <xs:element name="state" type="xs:string"/>
+                    </xs:sequence>
+                    <xs:attribute name="id" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="nic" type="cloudapi:NicWithSecurityGroupType"/>
+
+    <xs:element name="nics">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="nic" type="cloudapi:NicWithSecurityGroupType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

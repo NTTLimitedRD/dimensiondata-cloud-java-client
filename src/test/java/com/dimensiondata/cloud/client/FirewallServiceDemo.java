@@ -38,7 +38,10 @@ public class FirewallServiceDemo
 
         CreateFirewallRuleType createFirewallRule = new CreateFirewallRuleType();
         createFirewallRule.setAction(firewallRule.getAction());
-        createFirewallRule.setDestination(firewallRule.getDestination());
+        createFirewallRule.setDestination(getIpAndPortType(firewallRule.getDestination().getIp().getAddress(),
+                firewallRule.getDestination().getIp().getPrefixSize(),
+                firewallRule.getDestination().getPort().getBegin(),
+                firewallRule.getDestination().getPort().getEnd()));
         createFirewallRule.setEnabled(false);
         createFirewallRule.setIpVersion(firewallRule.getIpVersion());
         createFirewallRule.setName("a clone");
@@ -47,11 +50,30 @@ public class FirewallServiceDemo
         rulePlacement.setPosition(RulePositionType.FIRST);
         createFirewallRule.setPlacement(rulePlacement);
         createFirewallRule.setProtocol(firewallRule.getProtocol());
-        createFirewallRule.setSource(firewallRule.getSource());
+        createFirewallRule.setSource(getIpAndPortType(firewallRule.getSource().getIp().getAddress(),
+                        firewallRule.getSource().getIp().getPrefixSize(),
+                        firewallRule.getSource().getPort().getBegin(),
+                        firewallRule.getSource().getPort().getEnd()));
         response = firewallService.createFirewallRule(createFirewallRule);
         System.out.println(response.getMessage());
 
         response = firewallService.deleteFirewallRule("22df7176-2719-40fb-914a-5c8fd612fe33");
         System.out.println(response.getMessage());
+    }
+
+    private static IpAndPortType getIpAndPortType(String address, Integer prefixSize, Integer begin, Integer end)
+    {
+        IpAndPortType.Ip ip = new IpAndPortType.Ip();
+        ip.setAddress(address);
+        ip.setPrefixSize(prefixSize);
+
+        PortRangeType portRange = new PortRangeType();
+        portRange.setBegin(begin);
+        portRange.setEnd(end);
+
+        IpAndPortType ipAndPort = new IpAndPortType();
+        ipAndPort.setIp(ip);
+        ipAndPort.setPort(portRange);
+        return ipAndPort;
     }
 }
