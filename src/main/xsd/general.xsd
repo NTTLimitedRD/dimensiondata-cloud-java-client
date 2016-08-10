@@ -120,6 +120,7 @@
         <!-- if end is present, it implies a port range -->
         <xs:attribute name="end" type="xs:unsignedShort"/>
     </xs:complexType>
+
     <xs:complexType name="EmailConfigurationType">
         <xs:sequence>
             <xs:element name="body" type="xs:string"/>
@@ -135,5 +136,9 @@
             <xs:element name="url" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
-	
+
+    <xs:simpleType name="StringListType">
+      <xs:list itemType="xs:string" />
+    </xs:simpleType>
+
 </xs:schema>

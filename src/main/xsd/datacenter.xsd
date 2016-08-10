@@ -22,6 +22,7 @@
             <xs:element name="backup" type="cloudapi:BackupType" minOccurs="0"/>
             <xs:element name="consoleAccess" type="cloudapi:ConsoleAccessType" minOccurs="0"/>
             <xs:element name="monitoring" type="cloudapi:MonitoringType" minOccurs="0"/>
+            <xs:element name="drs" type="cloudapi:DrsType" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string" use="required"/>
         <xs:attribute name="type" type="xs:string" use="required"/>
@@ -90,6 +91,14 @@
         <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
     </xs:complexType>
 
+    <xs:complexType name="DrsType">
+        <xs:sequence>
+            <xs:element name="targetDatacenters" type="cloudapi:StringListType"/>
+            <xs:element name="property" type="cloudapi:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
+    </xs:complexType>
+
     <xs:element name="datacenters">
         <xs:complexType>
             <xs:sequence>
@@ -99,4 +108,26 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:complexType name="NetworkAdapterType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="default" type="xs:boolean" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="OperatingSystemDetailType">
+        <xs:sequence>
+            <xs:element name="displayName" type="xs:string"/>
+            <xs:element name="networkAdapter" type="cloudapi:NetworkAdapterType" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="family" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="OperatingSystemsDetails">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="operatingSystemDetail" type="cloudapi:OperatingSystemDetailType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
 </xs:schema>

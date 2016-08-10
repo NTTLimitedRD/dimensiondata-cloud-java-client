@@ -31,6 +31,7 @@
             <xs:element name="name" type="xs:string"/>
             <xs:element name="description" type="xs:string" minOccurs="0"/>
             <xs:element name="privateIpv4Range" type="cloudapi:IpRangeCidrType"/>
+            <xs:element name="gatewayAddressing" type="xs:string"/>
             <xs:element name="ipv4GatewayAddress" type="xs:string"/>
             <xs:element name="ipv6Range" type="cloudapi:IpRangeCidrType"/>
             <xs:element name="ipv6GatewayAddress" type="xs:string"/>
@@ -51,6 +52,7 @@
             <xs:element name="description" type="xs:string" minOccurs="0"/>
             <xs:element name="privateIpv4BaseAddress" type="xs:string"/>
             <xs:element name="privateIpv4PrefixSize" type="xs:int" minOccurs="0"/>
+            <xs:element name="gatewayAddressing" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 

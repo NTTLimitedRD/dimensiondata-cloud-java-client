@@ -17,6 +17,7 @@
             </xs:choice>
             <xs:element name="internalIp" type="xs:string"/>
             <xs:element name="externalIp" type="xs:string"/>
+            <xs:element name="externalIpAddressability" type="xs:string"/>
             <xs:element name="createTime" type="xs:dateTime"/>
             <xs:element name="state" type="xs:string"/>
         </xs:sequence>

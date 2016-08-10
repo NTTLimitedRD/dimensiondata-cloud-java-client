@@ -106,14 +106,10 @@
 
     <xs:complexType name="EditFirewallRuleType">
         <xs:sequence>
-            <!-- ACCEPT_DECISIVELY, DROP -->
             <xs:element name="action" type="xs:string" minOccurs="0"/>
-            <!-- IPV4, IPV6 -->
-            <xs:element name="ipVersion" type="xs:string" minOccurs="0"/>
-            <!-- TCP, UDP, ICMP, IP -->
             <xs:element name="protocol" type="xs:string" minOccurs="0"/>
-            <xs:element name="source" type="cloudapi:IpAndPortFilterType" minOccurs="0"/>
-            <xs:element name="destination" type="cloudapi:IpAndPortFilterType" minOccurs="0"/>
+            <xs:element name="source" type="cloudapi:IpAndPortType" minOccurs="0"/>
+            <xs:element name="destination" type="cloudapi:IpAndPortType" minOccurs="0"/>
             <xs:element name="enabled" type="xs:boolean" minOccurs="0"/>
             <xs:element name="placement" type="cloudapi:RulePlacementType" minOccurs="0"/>
         </xs:sequence>

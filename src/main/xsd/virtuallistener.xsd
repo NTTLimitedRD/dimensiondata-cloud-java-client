@@ -81,6 +81,7 @@
             <xs:element name="type" type="xs:string"/>
             <xs:element name="protocol" type="xs:string"/>
             <xs:element name="listenerIpAddress" type="xs:string"/>
+            <xs:element name="listenerIpAddressability" type="xs:string"/>
             <xs:element name="port" type="xs:int" minOccurs="0"/>
             <xs:element name="enabled" type="xs:boolean"/>
             <xs:element name="connectionLimit" type="xs:nonNegativeInteger"/>

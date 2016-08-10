@@ -26,6 +26,7 @@
             <xs:element name="description" type="xs:string" minOccurs="0"/>
             <xs:element name="type" type="xs:string"/>
             <xs:element name="snatIpv4Address" type="xs:string"/>
+            <xs:element name="outsideTransitVlanIpv4Subnet" type="cloudapi:IpRangeCidrType"/>
             <xs:element name="createTime" type="xs:dateTime"/>
             <xs:element name="state" type="xs:string"/>
             <xs:element name="progress" type="cloudapi:ProgressType" minOccurs="0"/>
