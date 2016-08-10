@@ -1,12 +1,11 @@
 package com.dimensiondata.cloud.client.http;
 
-import com.dimensiondata.cloud.client.Filter;
-import com.dimensiondata.cloud.client.OrderBy;
-import com.dimensiondata.cloud.client.Param;
-import com.dimensiondata.cloud.client.ServerService;
+import com.dimensiondata.cloud.client.*;
 import com.dimensiondata.cloud.client.model.*;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
-import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.*;
+import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import java.util.Arrays;
@@ -14,24 +13,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static org.glassfish.jersey.client.authentication.HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD;
+import static org.glassfish.jersey.client.authentication.HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME;
+
 public class ServerServiceImpl extends AbstractRestfulService implements ServerService, StateService
 {
-    public static final String PARAMETER_ID = "id";
-    public static final String PARAMETER_DATACENTER_ID = "datacenterId";
-    public static final String PARAMETER_NETWORKDOMAIN_ID = "networkDomainId";
-    public static final String PARAMETER_NETWORK_ID = "networkId";
-    public static final String PARAMETER_VLAN_ID = "vlanId";
-    public static final String PARAMETER_SOURCE_IMAGE_ID = "sourceImageId";
-    public static final String PARAMETER_DEPLOYED_ID = "deployed";
-    public static final String PARAMETER_NAME = "name";
-    public static final String PARAMETER_CREATE_TIME = "createTime";
-    public static final String PARAMETER_STATE = "state";
-    public static final String PARAMETER_STARTED = "started";
-    public static final String PARAMETER_OPERATING_SYSTEM_ID = "operatingSystemId";
-    public static final String PARAMETER_IPV6 = "ipv6";
-    public static final String PARAMETER_PRIVATE_IPV4 = "privateIpv4";
-    public static final String PARAMETER_SERVER_ID = "serverId";
-
     public static final List<String> ORDER_BY_PARAMETERS = Collections.unmodifiableList(Arrays.asList(
             PARAMETER_ID,
             PARAMETER_DATACENTER_ID,
@@ -223,6 +209,38 @@ public class ServerServiceImpl extends AbstractRestfulService implements ServerS
         return httpClient.post("server/upgradeVirtualHardware",
                 Entity.xml("<upgradeVirtualHardware xmlns=\"" + HttpClient.DEFAULT_NAMESPACE + "\" id=\"" + id + "\"/>"),
                 ResponseType.class);
+    }
+
+    @Override
+    public void disableServerBackup(String id)
+    {
+        Client client = ClientBuilder.newClient();
+        client = client.register(HttpAuthenticationFeature.basicBuilder().build());
+        WebTarget target = client.target(baseUrl)
+                .path("oec")
+                .path("0.9")
+                .path(UserSession.get().getOrgId())
+                .path("server")
+                .path(id)
+                .path("backup")
+                .queryParam("disable");
+
+        Invocation.Builder request = target.request()
+                .property(HTTP_AUTHENTICATION_BASIC_USERNAME, UserSession.get().getUser())
+                .property(HTTP_AUTHENTICATION_BASIC_PASSWORD, UserSession.get().getPassword());
+        Response response = request.get();
+        try
+        {
+            if (response.getStatus() == 400)
+            {
+                String xmlResponse = response.readEntity(String.class);
+                throw new ClientRuntimeException("Unable to Disable Backup for Server " + id + ":\n" + xmlResponse);
+            }
+        }
+        finally
+        {
+            response.close();
+        }
     }
 
     @Override
