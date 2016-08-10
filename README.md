@@ -4,7 +4,7 @@
 https://community.opsourcecloud.net/Browse.jsp?id=e5b1a66815188ad439f76183b401f026
 
 ### Requirements
-Java 7
+Java 8
 
 ### Maven Configuration
 ```xml
