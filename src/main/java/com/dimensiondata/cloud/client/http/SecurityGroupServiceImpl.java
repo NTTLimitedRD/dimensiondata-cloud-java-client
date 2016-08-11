@@ -1,5 +1,6 @@
 package com.dimensiondata.cloud.client.http;
 
+import com.dimensiondata.cloud.client.Filter;
 import com.dimensiondata.cloud.client.OrderBy;
 import com.dimensiondata.cloud.client.Param;
 import com.dimensiondata.cloud.client.SecurityGroupService;
@@ -51,13 +52,13 @@ public class SecurityGroupServiceImpl implements SecurityGroupService
     }
 
     @Override
-    public SecurityGroups listSecurityGroups(int pageSize, int pageNumber, OrderBy orderBy)
+    public SecurityGroups listSecurityGroups(int pageSize, int pageNumber, OrderBy orderBy, Filter filter)
     {
-        // TODO validate parameters
         return httpClient.get("securityGroup/securityGroup", SecurityGroups.class,
-                new Param(Param.PAGE_SIZE, pageSize),
-                new Param(Param.PAGE_NUMBER, pageNumber),
-                new Param(Param.ORDER_BY, orderBy.concatenateParameters()));
+                filter.concatenateParameters(
+                        new Param(Param.PAGE_SIZE, pageSize),
+                        new Param(Param.PAGE_NUMBER, pageNumber),
+                        new Param(Param.ORDER_BY, orderBy.concatenateParameters())));
     }
 
     @Override
@@ -72,5 +73,11 @@ public class SecurityGroupServiceImpl implements SecurityGroupService
         return httpClient.post("securityGroup/editSecurityGroup",
                 new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "editSecurityGroup"), EditSecurityGroup.class, editSecurityGroup),
                 ResponseType.class);
+    }
+
+    @Override
+    public String getState(String id)
+    {
+        return getSecurityGroup(id).getState();
     }
 }

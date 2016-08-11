@@ -15,18 +15,6 @@ import java.util.List;
 
 public class IpAddressServiceImpl extends AbstractRestfulService implements IpAddressService
 {
-    public static final String PARAMETER_ID = "id";
-    public static final String PARAMETER_NETWORKDOMAIN_ID = "networkDomainId";
-    public static final String PARAMETER_DATACENTER_ID = "datacenterId";
-    public static final String PARAMETER_BASE_IP = "baseIp";
-    public static final String PARAMETER_SIZE = "size";
-    public static final String PARAMETER_STATE = "state";
-    public static final String PARAMETER_CREATE_TIME = "createTime";
-    public static final String PARAMETER_NETWORK_ID = "networkId";
-    public static final String PARAMETER_IP_BLOCK_ID = "ipBlockId";
-    public static final String PARAMETER_IP_ADDRESS = "ipAddress";
-    public static final String PARAMETER_VLAN_ID = "vlanId";
-
     public static final List<String> PUBLIC_ORDER_BY_PARAMETERS = Collections.unmodifiableList(Arrays.asList(
             PARAMETER_ID,
             PARAMETER_NETWORKDOMAIN_ID,
@@ -132,6 +120,16 @@ public class IpAddressServiceImpl extends AbstractRestfulService implements IpAd
     }
 
     @Override
+    public ReservedIpv6Addresses listReservedIpv6Addresses(int pageSize, int pageNumber, OrderBy orderBy, Filter filter)
+    {
+        return httpClient.get("network/reservedIpv6Address", ReservedIpv6Addresses.class,
+                filter.concatenateParameters(
+                        new Param(Param.PAGE_SIZE, pageSize),
+                        new Param(Param.PAGE_NUMBER, pageNumber),
+                        new Param(Param.ORDER_BY, orderBy.concatenateParameters())));
+    }
+
+    @Override
     public ResponseType reservePrivateIpv4Address(ReservePrivateIpv4AddressType reservePrivateIpv4Address)
     {
         return httpClient.post("network/reservePrivateIpv4Address",
@@ -144,6 +142,22 @@ public class IpAddressServiceImpl extends AbstractRestfulService implements IpAd
     {
         return httpClient.post("network/reserveIpv6Address",
                 new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "reservePrivateIpv4Address"), ReserveIpv6AddressType.class, reserveIpv6Address),
+                ResponseType.class);
+    }
+
+    @Override
+    public ResponseType unreservePrivateIpv4Address(UnreservePrivateIpv4AddressType unreservePrivateIpv4Address)
+    {
+        return httpClient.post("network/unreservePrivateIpv4Address",
+                new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "unreservePrivateIpv4Address"), UnreservePrivateIpv4AddressType.class, unreservePrivateIpv4Address),
+                ResponseType.class);
+    }
+
+    @Override
+    public ResponseType unreserveIpv6Address(UnreserveIpv6AddressType unreserveIpv6Address)
+    {
+        return httpClient.post("network/unreserveIpv6Address",
+                new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "unreserveIpv6Address"), UnreserveIpv6AddressType.class, unreserveIpv6Address),
                 ResponseType.class);
     }
 }

@@ -1,8 +1,9 @@
 package com.dimensiondata.cloud.client;
 
+import com.dimensiondata.cloud.client.http.StateService;
 import com.dimensiondata.cloud.client.model.*;
 
-public interface SecurityGroupService
+public interface SecurityGroupService extends StateService
 {
     ResponseType createSecurityGroup(CreateSecurityGroup createSecurityGroup);
 
@@ -12,7 +13,7 @@ public interface SecurityGroupService
 
     ResponseType deleteSecurityGroup(String id);
 
-    SecurityGroups listSecurityGroups(int pageSize, int pageNumber, OrderBy orderBy);
+    SecurityGroups listSecurityGroups(int pageSize, int pageNumber, OrderBy orderBy, Filter filter);
 
     SecurityGroupType getSecurityGroup(String id);
 

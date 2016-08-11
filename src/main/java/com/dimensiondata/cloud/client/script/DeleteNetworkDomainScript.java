@@ -36,6 +36,8 @@ public class DeleteNetworkDomainScript
             DeleteAllNatRulesScript.execute(cloud, networkDomainId);
             DeleteAllNodesScript.execute(cloud, networkDomainId);
 
+            DeleteAllVlansScript.execute(cloud, networkDomainId);
+
             execute(cloud, networkDomainId);
         }
         catch (RuntimeException e)
