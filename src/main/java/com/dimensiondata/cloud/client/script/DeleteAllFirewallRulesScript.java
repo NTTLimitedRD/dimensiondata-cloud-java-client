@@ -21,6 +21,7 @@ public class DeleteAllFirewallRulesScript
 
         filter = new Filter(new Param(ServerService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
         firewallRules = cloud.firewall().listFirewallRules(PAGE_SIZE + defaultRulesCount, 1, OrderBy.EMPTY, filter);
+        println("FirewallRules to delete: " + (firewallRules.getTotalCount() - defaultRulesCount));
         while (firewallRules.getTotalCount() > defaultRulesCount)
         {
             deleteFirewallRules(cloud, firewallRules.getFirewallRule());

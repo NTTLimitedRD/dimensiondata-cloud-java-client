@@ -16,6 +16,7 @@ public class DeleteAllPoolsScript
     {
         Filter filter = new Filter(new Param(PoolService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
         Pools pools = cloud.pool().listPools(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
+        println("Pools to delete: " + pools.getTotalCount());
         while (pools.getTotalCount() > 0)
         {
             deletePools(cloud, pools.getPool());

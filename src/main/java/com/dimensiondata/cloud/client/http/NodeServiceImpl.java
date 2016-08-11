@@ -15,15 +15,6 @@ import java.util.List;
 
 public class NodeServiceImpl extends AbstractRestfulService implements NodeService
 {
-    public static final String PARAMETER_ID = "id";
-    public static final String PARAMETER_NETWORKDOMAIN_ID = "networkDomainId";
-    public static final String PARAMETER_DATACENTER_ID = "datacenterId";
-    public static final String PARAMETER_NAME = "name";
-    public static final String PARAMETER_STATE = "state";
-    public static final String PARAMETER_CREATE_TIME = "createTime";
-    public static final String PARAMETER_IPV4ADDRESS = "ipv4Address";
-    public static final String PARAMETER_IPV6ADDRESS = "ipv6Address";
-
     public static final List<String> ORDER_BY_PARAMETERS = Collections.unmodifiableList(Arrays.asList(
             PARAMETER_DATACENTER_ID,
             PARAMETER_NAME,
@@ -85,5 +76,11 @@ public class NodeServiceImpl extends AbstractRestfulService implements NodeServi
         return httpClient.post("networkDomainVip/deleteNode",
                 Entity.xml("<deleteNode xmlns=\"" + HttpClient.DEFAULT_NAMESPACE + "\" id=\"" + id + "\"/>"),
                 ResponseType.class);
+    }
+
+    @Override
+    public String getState(String id)
+    {
+        return getNode(id).getState();
     }
 }

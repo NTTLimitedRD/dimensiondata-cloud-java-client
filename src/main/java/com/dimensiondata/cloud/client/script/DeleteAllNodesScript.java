@@ -3,42 +3,42 @@ package com.dimensiondata.cloud.client.script;
 import com.dimensiondata.cloud.client.*;
 import com.dimensiondata.cloud.client.http.CallableDeletedState;
 import com.dimensiondata.cloud.client.http.CloudImpl;
-import com.dimensiondata.cloud.client.model.NatRuleType;
-import com.dimensiondata.cloud.client.model.NatRules;
+import com.dimensiondata.cloud.client.model.NodeType;
+import com.dimensiondata.cloud.client.model.Nodes;
 
 import java.util.List;
 
 import static com.dimensiondata.cloud.client.script.Script.*;
 
-public class DeleteAllNatRulesScript
+public class DeleteAllNodesScript
 {
     static void execute(Cloud cloud, String networkDomainId)
     {
-        Filter filter = new Filter(new Param(NatService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
-        NatRules natRules = cloud.nat().listNatRules(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
-        println("NatRules to delete: " + natRules.getTotalCount());
-        while (natRules.getTotalCount() > 0)
+        Filter filter = new Filter(new Param(NodeService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
+        Nodes nodes = cloud.node().listNodes(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
+        println("Nodes to delete: " + nodes.getTotalCount());
+        while (nodes.getTotalCount() > 0)
         {
-            deleteNatRules(cloud, natRules.getNatRule());
-            natRules = cloud.nat().listNatRules(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
+            deleteNodes(cloud, nodes.getNode());
+            nodes = cloud.node().listNodes(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
         }
     }
 
-    private static void deleteNatRules(Cloud cloud, List<NatRuleType> natRules)
+    private static void deleteNodes(Cloud cloud, List<NodeType> nodes)
     {
         // check all items are in a NORMAL state
-        for (NatRuleType natRule : natRules)
+        for (NodeType node : nodes)
         {
-            if (!natRule.getState().equals(NORMAL_STATE))
+            if (!node.getState().equals(NORMAL_STATE))
             {
-                throw new RuntimeException("NatRule not in NORMAL state: " + natRule.getId());
+                throw new RuntimeException("Node not in NORMAL state: " + node.getId());
             }
         }
 
-        for (NatRuleType natRule : natRules)
+        for (NodeType node : nodes)
         {
-            cloud.nat().deleteNatRule(natRule.getId());
-            awaitUntil("Deleting NatRule " + natRule.getId(), new CallableDeletedState(cloud.nat(), "natRule", natRule.getId()));
+            cloud.node().deleteNode(node.getId());
+            awaitUntil("Deleting Node " + node.getId(), new CallableDeletedState(cloud.node(), "node", node.getId()));
         }
     }
 

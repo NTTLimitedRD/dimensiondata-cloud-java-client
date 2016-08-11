@@ -7,9 +7,7 @@ import com.dimensiondata.cloud.client.model.Servers;
 
 import java.util.List;
 
-import static com.dimensiondata.cloud.client.script.Script.PAGE_SIZE;
-import static com.dimensiondata.cloud.client.script.Script.NORMAL_STATE;
-import static com.dimensiondata.cloud.client.script.Script.awaitUntil;
+import static com.dimensiondata.cloud.client.script.Script.*;
 
 
 public class DeleteAllServersScript
@@ -18,6 +16,7 @@ public class DeleteAllServersScript
     {
         Filter filter = new Filter(new Param(ServerService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
         Servers servers = cloud.server().listServers(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
+        println("Servers to delete: " + servers.getTotalCount());
         while (servers.getTotalCount() > 0)
         {
             deleteServers(cloud, servers.getServer());
