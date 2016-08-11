@@ -2,7 +2,8 @@ package com.dimensiondata.cloud.client.script;
 
 public class DeleteNetworkDomainScript
 {
-    // delete CGs
-    // delete Servers
-    // delete Firewall Rules
+    // TODO delete CGs
+    // delete DeleteAllServersScript
+    // delete DeleteAllFirewallRulesScript
+    // execute DeleteAllVirtualListenersScript
 }

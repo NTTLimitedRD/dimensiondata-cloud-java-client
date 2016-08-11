@@ -15,22 +15,6 @@ import java.util.List;
 
 public class VirtualListenerServiceImpl extends AbstractRestfulService implements VirtualListenerService
 {
-    public static final String PARAMETER_ID = "id";
-    public static final String PARAMETER_NETWORKDOMAIN_ID = "networkDomainId";
-    public static final String PARAMETER_DATACENTER_ID = "datacenterId";
-    public static final String PARAMETER_NAME = "name";
-    public static final String PARAMETER_ENABLED = "enabled";
-    public static final String PARAMETER_STATE = "state";
-    public static final String PARAMETER_CREATE_TIME = "createTime";
-    public static final String PARAMETER_TYPE = "type";
-    public static final String PARAMETER_PROTOCOL = "protocol";
-    public static final String PARAMETER_LISTENER_IP_ADDRESS = "listenerIpAddress";
-    public static final String PARAMETER_PORT = "port";
-    public static final String PARAMETER_POOL_ID = "poolId";
-    public static final String PARAMETER_CLIENT_CLONE_POOL_ID = "clientClonePoolId";
-    public static final String PARAMETER_PERSISTENCE_PROFILE_ID = "persistenceProfileId";
-    public static final String PARAMETER_FALLBACK_PERSISTENCE_PROFILE_ID = "fallbackPersistenceProfileId";
-
     public static final List<String> ORDER_BY_PARAMETERS = Collections.unmodifiableList(Arrays.asList(
             PARAMETER_DATACENTER_ID,
             PARAMETER_NAME,
@@ -101,5 +85,11 @@ public class VirtualListenerServiceImpl extends AbstractRestfulService implement
         return httpClient.post("networkDomainVip/deleteVirtualListener",
                 Entity.xml("<deleteVirtualListener xmlns=\"" + HttpClient.DEFAULT_NAMESPACE + "\" id=\"" + id + "\"/>"),
                 ResponseType.class);
+    }
+
+    @Override
+    public String getState(String id)
+    {
+        return getVirtualListener(id).getState();
     }
 }
