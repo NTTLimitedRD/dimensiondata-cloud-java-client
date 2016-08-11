@@ -2,7 +2,9 @@ package com.dimensiondata.cloud.client.script;
 
 import com.dimensiondata.cloud.client.User;
 import com.dimensiondata.cloud.client.UserSession;
+import com.dimensiondata.cloud.client.model.NameValuePairType;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -45,5 +47,13 @@ public class Script
     public static void println(String message)
     {
         System.out.println(System.currentTimeMillis() + "|" + message);
+    }
+
+    public static void print(String level, List<NameValuePairType> pairs)
+    {
+        for (NameValuePairType pair : pairs)
+        {
+            println(level + "|" + pair.getName() + "=" + pair.getValue());
+        }
     }
 }
