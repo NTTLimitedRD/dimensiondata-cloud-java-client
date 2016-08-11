@@ -15,12 +15,6 @@ import java.util.List;
 
 public class FirewallServiceImpl extends AbstractRestfulService implements FirewallService
 {
-    public static final String PARAMETER_ID = "id";
-    public static final String PARAMETER_NETWORKDOMAIN_ID = "networkDomainId";
-    public static final String PARAMETER_NAME = "name";
-    public static final String PARAMETER_CREATE_TIME = "createTime";
-    public static final String PARAMETER_STATE = "state";
-
     public static final List<String> ORDER_BY_PARAMETERS = Collections.unmodifiableList(Arrays.asList(
             PARAMETER_NAME,
             PARAMETER_CREATE_TIME));
@@ -78,5 +72,11 @@ public class FirewallServiceImpl extends AbstractRestfulService implements Firew
         return httpClient.post("network/deleteFirewallRule",
                 Entity.xml("<deleteFirewallRule xmlns=\"" + HttpClient.DEFAULT_NAMESPACE + "\" id=\"" + id + "\"/>"),
                 ResponseType.class);
+    }
+
+    @Override
+    public String getState(String id)
+    {
+        return getFirewallRule(id).getState();
     }
 }

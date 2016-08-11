@@ -1,49 +1,28 @@
-package com.dimensiondata.cloud.client;
+package com.dimensiondata.cloud.client.script;
 
+import com.dimensiondata.cloud.client.*;
 import com.dimensiondata.cloud.client.http.CloudImpl;
 import com.dimensiondata.cloud.client.model.ServerType;
 import com.dimensiondata.cloud.client.model.Servers;
 
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
-import static com.jayway.awaitility.Awaitility.await;
+import static com.dimensiondata.cloud.client.script.Script.PAGE_SIZE;
+import static com.dimensiondata.cloud.client.script.Script.NORMAL_STATE;
+import static com.dimensiondata.cloud.client.script.Script.awaitUntil;
 
 
-public class DeleteAllServersApp
+public class DeleteAllServersScript
 {
-    private static final String NORMAL_STATE = "NORMAL";
-    private static final int MAX_MINUTES_WAIT = 10;
-    private static final int POLL_DELAY_SECONDS = 30;
-
-    static void execute(String baseUrl, String networkDomainId)
+    static void execute(Cloud cloud, String networkDomainId)
     {
-        Cloud cloud = new CloudImpl(baseUrl);
-
-        int pageSize = 20;
         Filter filter = new Filter(new Param(ServerService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
-        Servers servers = cloud.server().listServers(pageSize, 1, OrderBy.EMPTY, filter);
+        Servers servers = cloud.server().listServers(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
         while (servers.getTotalCount() > 0)
         {
             deleteServers(cloud, servers.getServer());
-            servers = cloud.server().listServers(pageSize, 1, OrderBy.EMPTY, filter);
+            servers = cloud.server().listServers(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
         }
-    }
-
-    private static void awaitUntil(String conditionDescription, Callable<Boolean> conditionEvaluator)
-    {
-        User user = UserSession.get();
-        println(conditionDescription);
-        await().atMost(MAX_MINUTES_WAIT, TimeUnit.MINUTES)
-                .pollDelay(POLL_DELAY_SECONDS, TimeUnit.SECONDS)
-                .until(() -> {
-                    UserSession.set(user);
-                    print(".");
-                    return conditionEvaluator.call();
-                });
-        println();
-        println(conditionDescription + " - DONE");
     }
 
     private static void deleteServers(Cloud cloud, List<ServerType> servers)
@@ -88,31 +67,22 @@ public class DeleteAllServersApp
                 awaitUntil("Powering Off Server " + server.getId(), () -> !cloud.server().getServer(server.getId()).isStarted());
             }
 
-            // TODO Consistency Groups
+            // TODO Consistency Groups (run a different script previous to this one and not execute this script if server is a in CG?)
 
-            // deleteServers server
+            // delete server
             cloud.server().deleteServer(server.getId());
             awaitUntil("Deleting Server " + server.getId(), cloud.server().isServerDeleted(server.getId()));
         }
     }
 
-    private static void print(String message)
-        {
-            System.out.print(message);
-        }
-
-    private static void println()
-    {
-        System.out.println();
-    }
-
-    private static void println(String message)
-    {
-        System.out.println(System.currentTimeMillis() + "|" + message);
-    }
-
     public static void main(String[] args)
     {
+        if (args.length < 4)
+        {
+            System.out.println("required parameters: [api url] [user] [password] [networkdomain id]");
+            System.exit(-1);
+        }
+
         String url = args[0];
         String user = args[1];
         String password = args[2];
@@ -121,7 +91,8 @@ public class DeleteAllServersApp
         try
         {
             UserSession.set(new User(user, password));
-            execute(url, networkDomainId);
+            Cloud cloud = new CloudImpl(url);
+            execute(cloud, networkDomainId);
         }
         catch (RuntimeException e)
         {
