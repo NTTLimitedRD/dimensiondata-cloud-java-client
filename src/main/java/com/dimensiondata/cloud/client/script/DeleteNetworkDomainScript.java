@@ -10,5 +10,5 @@ public class DeleteNetworkDomainScript
 
     // execute DeleteAllVirtualListenersScript
     // execute DeleteAllPoolsScript
-
+    // execute DeleteAllNatRulesScript
 }
