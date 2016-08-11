@@ -14,7 +14,7 @@ public class DeleteAllFirewallRulesScript
 {
     static void execute(Cloud cloud, String networkDomainId)
     {
-        Filter filter = new Filter(new Param(ServerService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId),
+        Filter filter = new Filter(new Param(FirewallService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId),
                 new Param(FirewallService.PARAMETER_NAME + Filter.LIKE_SUFFIX, "CCDEFAULT*"));
         FirewallRules firewallRules = cloud.firewall().listFirewallRules(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
         int defaultRulesCount = firewallRules.getTotalCount();

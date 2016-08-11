@@ -14,7 +14,7 @@ public class DeleteAllVirtualListenersScript
 {
     static void execute(Cloud cloud, String networkDomainId)
     {
-        Filter filter = new Filter(new Param(ServerService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
+        Filter filter = new Filter(new Param(VirtualListenerService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
         VirtualListeners virtualListeners = cloud.virtualListener().listVirtualListeners(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
         while (virtualListeners.getTotalCount() > 0)
         {

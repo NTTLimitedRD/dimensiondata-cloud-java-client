@@ -15,25 +15,6 @@ import java.util.List;
 
 public class PoolServiceImpl extends AbstractRestfulService implements PoolService
 {
-    public static final String PARAMETER_ID = "id";
-    public static final String PARAMETER_NETWORKDOMAIN_ID = "networkDomainId";
-    public static final String PARAMETER_DATACENTER_ID = "datacenterId";
-    public static final String PARAMETER_NAME = "name";
-    public static final String PARAMETER_STATE = "state";
-    public static final String PARAMETER_CREATE_TIME = "createTime";
-    public static final String PARAMETER_LOAD_BALANCE_METHOD = "loadBalanceMethod";
-    public static final String PARAMETER_SERVICE_DOWN_ACTION = "serviceDownAction";
-    public static final String PARAMETER_SLOW_RAMP_TIME = "slowRampTime";
-
-    public static final String PARAMETER_POOL_ID = "poolId";
-    public static final String PARAMETER_POOL_NAME = "poolName";
-    public static final String PARAMETER_NODE_ID = "nodeId";
-    public static final String PARAMETER_NODE_NAME = "nodeName";
-    public static final String PARAMETER_NODE_IP = "nodeIp";
-    public static final String PARAMETER_NODE_STATUS = "nodeStatus";
-    public static final String PARAMETER_PORT = "port";
-    public static final String PARAMETER_STATUS = "status";
-
     public static final List<String> POOL_ORDER_BY_PARAMETERS = Collections.unmodifiableList(Arrays.asList(
             PARAMETER_NETWORKDOMAIN_ID,
             PARAMETER_DATACENTER_ID,
@@ -162,5 +143,11 @@ public class PoolServiceImpl extends AbstractRestfulService implements PoolServi
         return httpClient.post("networkDomainVip/removePoolMember",
                 Entity.xml("<removePoolMember xmlns=\"" + HttpClient.DEFAULT_NAMESPACE + "\" id=\"" + id + "\"/>"),
                 ResponseType.class);
+    }
+
+    @Override
+    public String getState(String id)
+    {
+        return getPool(id).getState();
     }
 }
