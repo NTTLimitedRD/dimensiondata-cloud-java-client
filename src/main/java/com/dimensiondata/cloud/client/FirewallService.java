@@ -20,4 +20,24 @@ public interface FirewallService extends StateService
     ResponseType editFirewallRule(EditFirewallRuleType editFirewallRule);
 
     ResponseType deleteFirewallRule(String id);
+
+    ResponseType createIpAddressList(CreateIpAddressList createIpAddressList);
+
+    IpAddressLists listIpAddressLists(int pageSize, int pageNumber, OrderBy orderBy, Filter filter);
+
+    IpAddressListType getIpAddressList(String id);
+
+    ResponseType editIpAddressList(EditIpAddressList editIpAddressList);
+
+    ResponseType deleteIpAddressList(String id);
+
+    ResponseType createPortList(CreatePortList createPortList);
+
+    PortLists listPortLists(int pageSize, int pageNumber, OrderBy orderBy, Filter filter);
+
+    PortListType getPortList(String id);
+
+    ResponseType editPortList(EditPortList editPortList);
+
+    ResponseType deletePortList(String id);
 }

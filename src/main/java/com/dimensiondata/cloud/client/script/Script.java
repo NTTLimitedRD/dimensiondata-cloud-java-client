@@ -2,7 +2,9 @@ package com.dimensiondata.cloud.client.script;
 
 import com.dimensiondata.cloud.client.User;
 import com.dimensiondata.cloud.client.UserSession;
+import com.dimensiondata.cloud.client.http.RequestException;
 import com.dimensiondata.cloud.client.model.NameValuePairType;
+import com.dimensiondata.cloud.client.model.ResponseType;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -12,7 +14,7 @@ import static com.jayway.awaitility.Awaitility.await;
 
 public class Script
 {
-    public static final int PAGE_SIZE = 20;
+    public static final int PAGE_SIZE = 50;
     public static final String NORMAL_STATE = "NORMAL";
     public static final int MAX_MINUTES_WAIT = 15;
     public static final int POLL_DELAY_SECONDS = 5;
@@ -55,5 +57,19 @@ public class Script
         {
             println(level + "|" + pair.getName() + "=" + pair.getValue());
         }
+    }
+
+    public static void print(RequestException e)
+    {
+        println("ERROR!");
+        ResponseType response = e.getResponse();
+        println("Operation: " + response.getOperation());
+        println("ResponseCode: " + response.getResponseCode());
+        println("Message: " + response.getMessage());
+        println("Request ID: " + response.getRequestId());
+        print("INFO", response.getInfo());
+        print("WARN", response.getWarning());
+        print("ERROR", response.getError());
+        e.printStackTrace();
     }
 }

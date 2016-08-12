@@ -5,10 +5,8 @@ import com.dimensiondata.cloud.client.User;
 import com.dimensiondata.cloud.client.UserSession;
 import com.dimensiondata.cloud.client.http.CloudImpl;
 import com.dimensiondata.cloud.client.http.RequestException;
-import com.dimensiondata.cloud.client.model.ResponseType;
 
 import static com.dimensiondata.cloud.client.script.Script.print;
-import static com.dimensiondata.cloud.client.script.Script.println;
 
 public class DeleteNetworkDomainScript
 {
@@ -35,13 +33,13 @@ public class DeleteNetworkDomainScript
             DeleteAllServersScript.execute(cloud, networkDomainId);
 
             DeleteAllFirewallRulesScript.execute(cloud, networkDomainId);
+            DeleteAllIpAddressListsScript.execute(cloud, networkDomainId);
+            DeleteAllPortListsScript.execute(cloud, networkDomainId);
 
             DeleteAllVirtualListenersScript.execute(cloud, networkDomainId);
 
             DeleteAllPoolsScript.execute(cloud, networkDomainId);
-
             DeleteAllNatRulesScript.execute(cloud, networkDomainId);
-
             DeleteAllNodesScript.execute(cloud, networkDomainId);
 
             DeleteAllVlansScript.execute(cloud, networkDomainId);
@@ -52,16 +50,7 @@ public class DeleteNetworkDomainScript
         }
         catch (RequestException e)
         {
-            println("ERROR!");
-            ResponseType response = e.getResponse();
-            println("Operation: " + response.getOperation());
-            println("ResponseCode: " + response.getResponseCode());
-            println("Message: " + response.getMessage());
-            println("Request ID: " + response.getRequestId());
-            print("INFO", response.getInfo());
-            print("WARN", response.getWarning());
-            print("ERROR", response.getError());
-            e.printStackTrace();
+            print(e);
         }
         catch (RuntimeException e)
         {

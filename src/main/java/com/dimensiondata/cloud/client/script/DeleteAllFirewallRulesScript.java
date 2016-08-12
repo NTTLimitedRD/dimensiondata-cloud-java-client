@@ -3,6 +3,7 @@ package com.dimensiondata.cloud.client.script;
 import com.dimensiondata.cloud.client.*;
 import com.dimensiondata.cloud.client.http.CallableDeletedState;
 import com.dimensiondata.cloud.client.http.CloudImpl;
+import com.dimensiondata.cloud.client.http.RequestException;
 import com.dimensiondata.cloud.client.model.FirewallRuleType;
 import com.dimensiondata.cloud.client.model.FirewallRules;
 
@@ -68,6 +69,10 @@ public class DeleteAllFirewallRulesScript
             UserSession.set(new User(user, password));
             Cloud cloud = new CloudImpl(url);
             execute(cloud, networkDomainId);
+        }
+        catch (RequestException e)
+        {
+            print(e);
         }
         catch (RuntimeException e)
         {
