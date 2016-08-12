@@ -6,6 +6,22 @@ import java.util.concurrent.Callable;
 
 public interface ServerService
 {
+    String PARAMETER_ID = "id";
+    String PARAMETER_DATACENTER_ID = "datacenterId";
+    String PARAMETER_NETWORKDOMAIN_ID = "networkDomainId";
+    String PARAMETER_NETWORK_ID = "networkId";
+    String PARAMETER_VLAN_ID = "vlanId";
+    String PARAMETER_SOURCE_IMAGE_ID = "sourceImageId";
+    String PARAMETER_DEPLOYED_ID = "deployed";
+    String PARAMETER_NAME = "name";
+    String PARAMETER_CREATE_TIME = "createTime";
+    String PARAMETER_STATE = "state";
+    String PARAMETER_STARTED = "started";
+    String PARAMETER_OPERATING_SYSTEM_ID = "operatingSystemId";
+    String PARAMETER_IPV6 = "ipv6";
+    String PARAMETER_PRIVATE_IPV4 = "privateIpv4";
+    String PARAMETER_SERVER_ID = "serverId";
+
     ResponseType deployServer(DeployServerType deployServer);
 
     Servers listServers(int pageSize, int pageNumber, OrderBy orderBy, Filter filter);
@@ -39,6 +55,8 @@ public interface ServerService
     ResponseType reconfigureServer(ReconfigureServerType reconfigureServer);
 
     ResponseType upgradeVirtualHardware(String id);
+
+    void disableServerBackup(String id);
 
     String getIdFromDeployResponse(ResponseType response);
 

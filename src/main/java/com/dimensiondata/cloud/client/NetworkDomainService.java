@@ -1,10 +1,11 @@
 package com.dimensiondata.cloud.client;
 
+import com.dimensiondata.cloud.client.http.StateService;
 import com.dimensiondata.cloud.client.model.*;
 
 import java.util.concurrent.Callable;
 
-public interface NetworkDomainService
+public interface NetworkDomainService extends StateService
 {
     NetworkDomains listNetworkDomains(int pageSize, int pageNumber, OrderBy orderBy, Filter filter);
 

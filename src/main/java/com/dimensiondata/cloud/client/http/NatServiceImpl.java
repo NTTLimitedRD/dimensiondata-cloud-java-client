@@ -15,14 +15,6 @@ import java.util.List;
 
 public class NatServiceImpl extends AbstractRestfulService implements NatService
 {
-    public static final String PARAMETER_NETWORKDOMAIN_ID = "networkDomainId";
-    public static final String PARAMETER_ID = "id";
-    public static final String PARAMETER_STATE = "state";
-    public static final String PARAMETER_CREATE_TIME = "createTime";
-    public static final String PARAMETER_INTERNAL_IP = "internalIp";
-    public static final String PARAMETER_EXTERNAL_IP = "externalIp";
-    public static final String PARAMETER_NODE_ID = "nodeId";
-
     public static final List<String> ORDER_BY_PARAMETERS = Collections.unmodifiableList(Arrays.asList(
             PARAMETER_NETWORKDOMAIN_ID,
             PARAMETER_ID,
@@ -79,5 +71,11 @@ public class NatServiceImpl extends AbstractRestfulService implements NatService
         return httpClient.post("network/deleteNatRule",
                 Entity.xml("<deleteNatRule xmlns=\"" + HttpClient.DEFAULT_NAMESPACE + "\" id=\"" + id + "\"/>"),
                 ResponseType.class);
+    }
+
+    @Override
+    public String getState(String id)
+    {
+        return getNatRule(id).getState();
     }
 }

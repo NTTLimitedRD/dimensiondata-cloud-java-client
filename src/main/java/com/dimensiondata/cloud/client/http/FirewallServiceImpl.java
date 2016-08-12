@@ -15,12 +15,6 @@ import java.util.List;
 
 public class FirewallServiceImpl extends AbstractRestfulService implements FirewallService
 {
-    public static final String PARAMETER_ID = "id";
-    public static final String PARAMETER_NETWORKDOMAIN_ID = "networkDomainId";
-    public static final String PARAMETER_NAME = "name";
-    public static final String PARAMETER_CREATE_TIME = "createTime";
-    public static final String PARAMETER_STATE = "state";
-
     public static final List<String> ORDER_BY_PARAMETERS = Collections.unmodifiableList(Arrays.asList(
             PARAMETER_NAME,
             PARAMETER_CREATE_TIME));
@@ -77,6 +71,92 @@ public class FirewallServiceImpl extends AbstractRestfulService implements Firew
     {
         return httpClient.post("network/deleteFirewallRule",
                 Entity.xml("<deleteFirewallRule xmlns=\"" + HttpClient.DEFAULT_NAMESPACE + "\" id=\"" + id + "\"/>"),
+                ResponseType.class);
+    }
+
+    @Override
+    public String getState(String id)
+    {
+        return getFirewallRule(id).getState();
+    }
+
+    @Override
+    public ResponseType createIpAddressList(CreateIpAddressList createIpAddressList)
+    {
+        return httpClient.post("network/createIpAddressList",
+                new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "createIpAddressList"), CreateIpAddressList.class, createIpAddressList),
+                ResponseType.class);
+    }
+
+    @Override
+    public IpAddressLists listIpAddressLists(int pageSize, int pageNumber, OrderBy orderBy, Filter filter)
+    {
+        return httpClient.get("network/ipAddressList", IpAddressLists.class,
+                filter.concatenateParameters(
+                        new Param(Param.PAGE_SIZE, pageSize),
+                        new Param(Param.PAGE_NUMBER, pageNumber),
+                        new Param(Param.ORDER_BY, orderBy.concatenateParameters())));
+    }
+
+    @Override
+    public IpAddressListType getIpAddressList(String id)
+    {
+        return httpClient.get("network/ipAddressList/" + id, IpAddressListType.class);
+    }
+
+    @Override
+    public ResponseType editIpAddressList(EditIpAddressList editIpAddressList)
+    {
+        return httpClient.post("network/editIpAddressList",
+                new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "editIpAddressList"), EditIpAddressList.class, editIpAddressList),
+                ResponseType.class);
+    }
+
+    @Override
+    public ResponseType deleteIpAddressList(String id)
+    {
+        return httpClient.post("network/deleteIpAddressList",
+                Entity.xml("<deleteIpAddressList xmlns=\"" + HttpClient.DEFAULT_NAMESPACE + "\" id=\"" + id + "\"/>"),
+                ResponseType.class);
+    }
+
+    @Override
+    public ResponseType createPortList(CreatePortList createPortList)
+    {
+        return httpClient.post("network/createPortList",
+                new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "createPortList"), CreatePortList.class, createPortList),
+                ResponseType.class);
+    }
+
+    @Override
+    public PortLists listPortLists(int pageSize, int pageNumber, OrderBy orderBy, Filter filter)
+    {
+        return httpClient.get("network/portList", PortLists.class,
+                filter.concatenateParameters(
+                        new Param(Param.PAGE_SIZE, pageSize),
+                        new Param(Param.PAGE_NUMBER, pageNumber),
+                        new Param(Param.ORDER_BY, orderBy.concatenateParameters())));
+    }
+
+    @Override
+    public PortListType getPortList(String id)
+    {
+        return httpClient.get("network/portList/" + id, PortListType.class);
+    }
+
+    @Override
+    public ResponseType editPortList(EditPortList editPortList)
+    {
+        return httpClient.post("network/editPortList",
+                new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "editIpAddressList"), EditPortList.class, editPortList),
+                ResponseType.class);
+    }
+
+    @Override
+    public ResponseType deletePortList(String id)
+    {
+        return httpClient.post("network/deletePortList",
+                Entity.xml("<deletePortList xmlns=\"" + HttpClient.DEFAULT_NAMESPACE + "\" id=\"" + id + "\"/>"),
                 ResponseType.class);
     }
 }

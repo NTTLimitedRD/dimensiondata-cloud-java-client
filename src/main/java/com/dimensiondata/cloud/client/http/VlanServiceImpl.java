@@ -14,20 +14,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class VlanServiceImpl extends AbstractRestfulService implements VlanService, StateService
+public class VlanServiceImpl extends AbstractRestfulService implements VlanService
 {
-    public static final String PARAMETER_ID = "id";
-    public static final String PARAMETER_NETWORK_DOMAIN_ID = "networkDomainId";
-    public static final String PARAMETER_DATACENTER_ID = "datacenterId";
-    public static final String PARAMETER_NAME = "name";
-    public static final String PARAMETER_PRIVATE_IPV4_ADDRESS = "privateIpv4Address";
-    public static final String PARAMETER_IPV6_ADDRESS = "ipv6Address";
-    public static final String PARAMETER_STATE = "state";
-    public static final String PARAMETER_CREATE_TIME = "createTime";
-
     public static final List<String> ORDER_BY_PARAMETERS = Collections.unmodifiableList(Arrays.asList(
             PARAMETER_ID,
-            PARAMETER_NETWORK_DOMAIN_ID,
+            PARAMETER_NETWORKDOMAIN_ID,
             PARAMETER_DATACENTER_ID,
             PARAMETER_NAME,
             PARAMETER_PRIVATE_IPV4_ADDRESS,
@@ -37,7 +28,7 @@ public class VlanServiceImpl extends AbstractRestfulService implements VlanServi
 
     public static final List<String> FILTER_PARAMETERS = Collections.unmodifiableList(Arrays.asList(
             PARAMETER_ID,
-            PARAMETER_NETWORK_DOMAIN_ID,
+            PARAMETER_NETWORKDOMAIN_ID,
             PARAMETER_DATACENTER_ID,
             PARAMETER_NAME,
             PARAMETER_PRIVATE_IPV4_ADDRESS,
