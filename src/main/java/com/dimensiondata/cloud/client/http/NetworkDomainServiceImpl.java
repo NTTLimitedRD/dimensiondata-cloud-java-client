@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class NetworkDomainServiceImpl extends AbstractRestfulService implements NetworkDomainService, StateService
+public class NetworkDomainServiceImpl extends AbstractRestfulService implements NetworkDomainService
 {
     public static final String PARAMETER_ID = "id";
     public static final String PARAMETER_DATACENTER_ID = "datacenterId";

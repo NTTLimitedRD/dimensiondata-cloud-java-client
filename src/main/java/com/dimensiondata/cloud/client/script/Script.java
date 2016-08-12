@@ -70,6 +70,5 @@ public class Script
         print("INFO", response.getInfo());
         print("WARN", response.getWarning());
         print("ERROR", response.getError());
-        e.printStackTrace();
     }
 }

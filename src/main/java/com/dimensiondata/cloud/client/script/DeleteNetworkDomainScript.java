@@ -3,9 +3,11 @@ package com.dimensiondata.cloud.client.script;
 import com.dimensiondata.cloud.client.Cloud;
 import com.dimensiondata.cloud.client.User;
 import com.dimensiondata.cloud.client.UserSession;
+import com.dimensiondata.cloud.client.http.CallableDeletedState;
 import com.dimensiondata.cloud.client.http.CloudImpl;
 import com.dimensiondata.cloud.client.http.RequestException;
 
+import static com.dimensiondata.cloud.client.script.Script.awaitUntil;
 import static com.dimensiondata.cloud.client.script.Script.print;
 
 public class DeleteNetworkDomainScript
@@ -27,8 +29,6 @@ public class DeleteNetworkDomainScript
         {
             UserSession.set(new User(user, password));
             Cloud cloud = new CloudImpl(url);
-
-            // TODO delete CGs
 
             DeleteAllServersScript.execute(cloud, networkDomainId);
 
@@ -60,6 +60,7 @@ public class DeleteNetworkDomainScript
 
     private static void execute(Cloud cloud, String networkDomainId)
     {
-        // TODO delete Network Domain
+        cloud.networkDomain().deleteNetworkDomain(networkDomainId);
+        awaitUntil("Deleting NetworkDomain " + networkDomainId, new CallableDeletedState(cloud.networkDomain(), "networkDomain", networkDomainId));
     }
 }
