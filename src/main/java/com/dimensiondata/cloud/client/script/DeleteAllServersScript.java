@@ -1,8 +1,6 @@
 package com.dimensiondata.cloud.client.script;
 
 import com.dimensiondata.cloud.client.*;
-import com.dimensiondata.cloud.client.http.CloudImpl;
-import com.dimensiondata.cloud.client.http.RequestException;
 import com.dimensiondata.cloud.client.model.ServerType;
 import com.dimensiondata.cloud.client.model.Servers;
 
@@ -11,9 +9,10 @@ import java.util.List;
 import static com.dimensiondata.cloud.client.script.Script.*;
 
 
-public class DeleteAllServersScript
+public class DeleteAllServersScript implements NetworkDomainScript
 {
-    static void execute(Cloud cloud, String networkDomainId)
+    @Override
+    public void execute(Cloud cloud, String networkDomainId)
     {
         Filter filter = new Filter(new Param(ServerService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
         Servers servers = cloud.server().listServers(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
@@ -67,40 +66,9 @@ public class DeleteAllServersScript
                 awaitUntil("Powering Off Server " + server.getId(), () -> !cloud.server().getServer(server.getId()).isStarted());
             }
 
-            // TODO Consistency Groups (run a different script previous to this one and not execute this script if server is a in CG?)
-
             // delete server
             cloud.server().deleteServer(server.getId());
             awaitUntil("Deleting Server " + server.getId(), cloud.server().isServerDeleted(server.getId()));
-        }
-    }
-
-    public static void main(String[] args)
-    {
-        if (args.length < 4)
-        {
-            System.out.println("required parameters: [api url] [user] [password] [networkdomain id]");
-            System.exit(-1);
-        }
-
-        String url = args[0];
-        String user = args[1];
-        String password = args[2];
-        String networkDomainId = args[3];
-
-        try
-        {
-            UserSession.set(new User(user, password));
-            Cloud cloud = new CloudImpl(url);
-            execute(cloud, networkDomainId);
-        }
-        catch (RequestException e)
-        {
-            print(e);
-        }
-        catch (RuntimeException e)
-        {
-            e.printStackTrace();
         }
     }
 }

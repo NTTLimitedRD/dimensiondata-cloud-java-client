@@ -2,7 +2,6 @@ package com.dimensiondata.cloud.client.script;
 
 import com.dimensiondata.cloud.client.*;
 import com.dimensiondata.cloud.client.http.CallableDeletedState;
-import com.dimensiondata.cloud.client.http.CloudImpl;
 import com.dimensiondata.cloud.client.http.RequestException;
 import com.dimensiondata.cloud.client.model.PortListType;
 import com.dimensiondata.cloud.client.model.PortLists;
@@ -11,9 +10,10 @@ import java.util.List;
 
 import static com.dimensiondata.cloud.client.script.Script.*;
 
-public class DeleteAllPortListsScript
+public class DeleteAllPortListsScript implements NetworkDomainScript
 {
-    static void execute(Cloud cloud, String networkDomainId)
+    @Override
+    public void execute(Cloud cloud, String networkDomainId)
     {
         Filter filter = new Filter(new Param(FirewallService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
         PortLists portLists = cloud.firewall().listPortLists(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
@@ -58,35 +58,6 @@ public class DeleteAllPortListsScript
                     throw e;
                 }
             }
-        }
-    }
-
-    public static void main(String[] args)
-    {
-        if (args.length < 4)
-        {
-            System.out.println("required parameters: [api url] [user] [password] [networkdomain id]");
-            System.exit(-1);
-        }
-
-        String url = args[0];
-        String user = args[1];
-        String password = args[2];
-        String networkDomainId = args[3];
-
-        try
-        {
-            UserSession.set(new User(user, password));
-            Cloud cloud = new CloudImpl(url);
-            execute(cloud, networkDomainId);
-        }
-        catch (RequestException e)
-        {
-            print(e);
-        }
-        catch (RuntimeException e)
-        {
-            e.printStackTrace();
         }
     }
 }

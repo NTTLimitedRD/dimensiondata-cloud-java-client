@@ -7,16 +7,52 @@ import com.dimensiondata.cloud.client.http.CallableDeletedState;
 import com.dimensiondata.cloud.client.http.CloudImpl;
 import com.dimensiondata.cloud.client.http.RequestException;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import static com.dimensiondata.cloud.client.script.Script.awaitUntil;
 import static com.dimensiondata.cloud.client.script.Script.print;
 
-public class DeleteNetworkDomainScript
+public class DeleteNetworkDomainScript implements NetworkDomainScript
 {
     public static void main(String[] args)
     {
-        if (args.length < 4)
+        Map<String,NetworkDomainScript> scripts = new HashMap<>();
+        scripts.put("firewallRules", new DeleteAllFirewallRulesScript());
+        scripts.put("ipAddressLists", new DeleteAllIpAddressListsScript());
+        scripts.put("natRules", new DeleteAllNatRulesScript());
+        scripts.put("nodes", new DeleteAllNodesScript());
+        scripts.put("pools", new DeleteAllPoolsScript());
+        scripts.put("portLists", new DeleteAllPortListsScript());
+        scripts.put("publicIpBlocks", new DeleteAllPublicIpBlocksScript());
+        scripts.put("servers", new DeleteAllServersScript());
+        scripts.put("virtualListeners", new DeleteAllVirtualListenersScript());
+        scripts.put("vlans", new DeleteAllVlansScript());
+        scripts.put("networkDomain", new DeleteNetworkDomainScript());
+        scripts.put("ALL", (cloud, networkDomainId) ->
         {
-            System.out.println("required parameters: [api url] [user] [password] [networkdomain id]");
+            new DeleteAllServersScript().execute(cloud, networkDomainId);
+
+            new DeleteAllFirewallRulesScript().execute(cloud, networkDomainId);
+            new DeleteAllIpAddressListsScript().execute(cloud, networkDomainId);
+            new DeleteAllPortListsScript().execute(cloud, networkDomainId);
+
+            new DeleteAllVirtualListenersScript().execute(cloud, networkDomainId);
+
+            new DeleteAllPoolsScript().execute(cloud, networkDomainId);
+            new DeleteAllNatRulesScript().execute(cloud, networkDomainId);
+            new DeleteAllNodesScript().execute(cloud, networkDomainId);
+
+            new DeleteAllVlansScript().execute(cloud, networkDomainId);
+
+            new DeleteAllPublicIpBlocksScript().execute(cloud, networkDomainId);
+
+            new DeleteNetworkDomainScript().execute(cloud, networkDomainId);
+        });
+
+        if (args.length < 5)
+        {
+            System.out.println("required parameters: [api url] [user] [password] [networkdomain id] [target]");
             System.exit(-1);
         }
 
@@ -24,29 +60,20 @@ public class DeleteNetworkDomainScript
         String user = args[1];
         String password = args[2];
         String networkDomainId = args[3];
+        String operation = args[4];
+
+        if (!scripts.containsKey(operation))
+        {
+            System.out.println("ERROR: invalid Target. Targets available:");
+            scripts.keySet().stream().sorted().forEach(System.out::println);
+            System.exit(-1);
+        }
 
         try
         {
             UserSession.set(new User(user, password));
             Cloud cloud = new CloudImpl(url);
-
-            DeleteAllServersScript.execute(cloud, networkDomainId);
-
-            DeleteAllFirewallRulesScript.execute(cloud, networkDomainId);
-            DeleteAllIpAddressListsScript.execute(cloud, networkDomainId);
-            DeleteAllPortListsScript.execute(cloud, networkDomainId);
-
-            DeleteAllVirtualListenersScript.execute(cloud, networkDomainId);
-
-            DeleteAllPoolsScript.execute(cloud, networkDomainId);
-            DeleteAllNatRulesScript.execute(cloud, networkDomainId);
-            DeleteAllNodesScript.execute(cloud, networkDomainId);
-
-            DeleteAllVlansScript.execute(cloud, networkDomainId);
-
-            DeleteAllPublicIpBlocksScript.execute(cloud, networkDomainId);
-
-            execute(cloud, networkDomainId);
+            scripts.get(operation).execute(cloud, networkDomainId);
         }
         catch (RequestException e)
         {
@@ -58,7 +85,8 @@ public class DeleteNetworkDomainScript
         }
     }
 
-    private static void execute(Cloud cloud, String networkDomainId)
+    @Override
+    public void execute(Cloud cloud, String networkDomainId)
     {
         cloud.networkDomain().deleteNetworkDomain(networkDomainId);
         awaitUntil("Deleting NetworkDomain " + networkDomainId, new CallableDeletedState(cloud.networkDomain(), "networkDomain", networkDomainId));

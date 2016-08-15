@@ -2,17 +2,16 @@ package com.dimensiondata.cloud.client.script;
 
 import com.dimensiondata.cloud.client.*;
 import com.dimensiondata.cloud.client.http.CallableDeletedState;
-import com.dimensiondata.cloud.client.http.CloudImpl;
-import com.dimensiondata.cloud.client.http.RequestException;
 import com.dimensiondata.cloud.client.model.*;
 
 import java.util.List;
 
 import static com.dimensiondata.cloud.client.script.Script.*;
 
-public class DeleteAllVlansScript
+public class DeleteAllVlansScript implements NetworkDomainScript
 {
-    static void execute(Cloud cloud, String networkDomainId)
+    @Override
+    public void execute(Cloud cloud, String networkDomainId)
     {
         Filter filter = new Filter(new Param(VlanService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
         Vlans vlans = cloud.vlan().listVlans(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
@@ -100,35 +99,6 @@ public class DeleteAllVlansScript
             unreserveIpv6Address.setIpAddress(address.getValue());
             cloud.ipAddress().unreserveIpv6Address(unreserveIpv6Address);
             println("Unreserved Ipv6 Address " + address.getValue());
-        }
-    }
-
-    public static void main(String[] args)
-    {
-        if (args.length < 4)
-        {
-            System.out.println("required parameters: [api url] [user] [password] [networkdomain id]");
-            System.exit(-1);
-        }
-
-        String url = args[0];
-        String user = args[1];
-        String password = args[2];
-        String networkDomainId = args[3];
-
-        try
-        {
-            UserSession.set(new User(user, password));
-            Cloud cloud = new CloudImpl(url);
-            execute(cloud, networkDomainId);
-        }
-        catch (RequestException e)
-        {
-            print(e);
-        }
-        catch (RuntimeException e)
-        {
-            e.printStackTrace();
         }
     }
 }
