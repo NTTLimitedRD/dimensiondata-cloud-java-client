@@ -2,8 +2,6 @@ package com.dimensiondata.cloud.client.script;
 
 import com.dimensiondata.cloud.client.*;
 import com.dimensiondata.cloud.client.http.CallableDeletedState;
-import com.dimensiondata.cloud.client.http.CloudImpl;
-import com.dimensiondata.cloud.client.http.RequestException;
 import com.dimensiondata.cloud.client.model.VirtualListenerType;
 import com.dimensiondata.cloud.client.model.VirtualListeners;
 
@@ -11,9 +9,10 @@ import java.util.List;
 
 import static com.dimensiondata.cloud.client.script.Script.*;
 
-public class DeleteAllVirtualListenersScript
+public class DeleteAllVirtualListenersScript implements NetworkDomainScript
 {
-    static void execute(Cloud cloud, String networkDomainId)
+    @Override
+    public void execute(Cloud cloud, String networkDomainId)
     {
         Filter filter = new Filter(new Param(VirtualListenerService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
         VirtualListeners virtualListeners = cloud.virtualListener().listVirtualListeners(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
@@ -40,35 +39,6 @@ public class DeleteAllVirtualListenersScript
         {
             cloud.virtualListener().deleteVirtualListener(virtualListener.getId());
             awaitUntil("Deleting VirtualListener " + virtualListener.getId(), new CallableDeletedState(cloud.virtualListener(), "virtualListener", virtualListener.getId()));
-        }
-    }
-
-    public static void main(String[] args)
-    {
-        if (args.length < 4)
-        {
-            System.out.println("required parameters: [api url] [user] [password] [networkdomain id]");
-            System.exit(-1);
-        }
-
-        String url = args[0];
-        String user = args[1];
-        String password = args[2];
-        String networkDomainId = args[3];
-
-        try
-        {
-            UserSession.set(new User(user, password));
-            Cloud cloud = new CloudImpl(url);
-            execute(cloud, networkDomainId);
-        }
-        catch (RequestException e)
-        {
-            print(e);
-        }
-        catch (RuntimeException e)
-        {
-            e.printStackTrace();
         }
     }
 }

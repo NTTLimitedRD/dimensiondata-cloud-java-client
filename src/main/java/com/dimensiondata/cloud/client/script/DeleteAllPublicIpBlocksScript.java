@@ -1,8 +1,6 @@
 package com.dimensiondata.cloud.client.script;
 
 import com.dimensiondata.cloud.client.*;
-import com.dimensiondata.cloud.client.http.CloudImpl;
-import com.dimensiondata.cloud.client.http.RequestException;
 import com.dimensiondata.cloud.client.model.PublicIpBlockType;
 import com.dimensiondata.cloud.client.model.PublicIpBlocks;
 
@@ -10,9 +8,10 @@ import java.util.List;
 
 import static com.dimensiondata.cloud.client.script.Script.*;
 
-public class DeleteAllPublicIpBlocksScript
+public class DeleteAllPublicIpBlocksScript implements NetworkDomainScript
 {
-    static void execute(Cloud cloud, String networkDomainId)
+    @Override
+    public void execute(Cloud cloud, String networkDomainId)
     {
         Filter filter = new Filter(new Param(IpAddressService.PARAMETER_NETWORKDOMAIN_ID, networkDomainId));
         PublicIpBlocks blocks = cloud.ipAddress().listPublicIpBlocks(PAGE_SIZE, 1, OrderBy.EMPTY, filter);
@@ -40,35 +39,6 @@ public class DeleteAllPublicIpBlocksScript
             cloud.ipAddress().removePublicIpBlock(block.getId());
             // TODO enable again when CCD-7503 is fixed
             // awaitUntil("Removing Public Ip Block " + block.getId(), new CallableDeletedState(id -> cloud.ipAddress().getPublicIpBlock(id).getState(), "block", block.getId()));
-        }
-    }
-
-    public static void main(String[] args)
-    {
-        if (args.length < 4)
-        {
-            System.out.println("required parameters: [api url] [user] [password] [networkdomain id]");
-            System.exit(-1);
-        }
-
-        String url = args[0];
-        String user = args[1];
-        String password = args[2];
-        String networkDomainId = args[3];
-
-        try
-        {
-            UserSession.set(new User(user, password));
-            Cloud cloud = new CloudImpl(url);
-            execute(cloud, networkDomainId);
-        }
-        catch (RequestException e)
-        {
-            print(e);
-        }
-        catch (RuntimeException e)
-        {
-            e.printStackTrace();
         }
     }
 }
