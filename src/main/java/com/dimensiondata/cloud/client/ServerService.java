@@ -1,8 +1,16 @@
 package com.dimensiondata.cloud.client;
 
-import com.dimensiondata.cloud.client.model.*;
-
 import java.util.concurrent.Callable;
+
+import com.dimensiondata.cloud.client.model.AddDiskType;
+import com.dimensiondata.cloud.client.model.AddNicType;
+import com.dimensiondata.cloud.client.model.AntiAffinityRules;
+import com.dimensiondata.cloud.client.model.DeployServerType;
+import com.dimensiondata.cloud.client.model.NotifyNicIpChangeType;
+import com.dimensiondata.cloud.client.model.ReconfigureServerType;
+import com.dimensiondata.cloud.client.model.ResponseType;
+import com.dimensiondata.cloud.client.model.ServerType;
+import com.dimensiondata.cloud.client.model.Servers;
 
 public interface ServerService
 {
@@ -43,6 +51,8 @@ public interface ServerService
     ResponseType updateVmwareTools(String id);
 
     ResponseType addNic(AddNicType addNic);
+
+    ResponseType addDisk(AddDiskType addDisk);
 
     ResponseType removeNic(String id);
 
