@@ -271,7 +271,7 @@ public class ServerServiceImpl extends AbstractRestfulService implements ServerS
     @Override
     public String getIdFromDeployResponse(ResponseType response)
     {
-        assertParameterEquals("Operation", "DEPLOY", response.getOperation());
+        assertParameterEquals("Operation", "DEPLOY_SERVER", response.getOperation());
         assertParameterEquals("ResponseCode", "IN_PROGRESS", response.getResponseCode());
         return findRequiredNameValuePair("serverId", response.getInfo()).getValue();
     }
