@@ -1,8 +1,8 @@
 package com.dimensiondata.cloud.client.http;
 
-import com.dimensiondata.cloud.client.model.NameValuePairType;
-
 import java.util.List;
+
+import com.dimensiondata.cloud.client.model.NameValuePairType;
 
 public class AbstractRestfulService
 {
@@ -24,7 +24,7 @@ public class AbstractRestfulService
         }
     }
 
-    protected static NameValuePairType findRequiredNameValuePair(String name, List<NameValuePairType> nameValuePairs)
+    public static NameValuePairType findRequiredNameValuePair(String name, List<NameValuePairType> nameValuePairs)
     {
         for (NameValuePairType nameValuePair : nameValuePairs)
         {
