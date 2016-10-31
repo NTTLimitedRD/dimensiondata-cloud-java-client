@@ -10,5 +10,5 @@ public interface DatacenterService
 
     DatacenterType getDatacenter(String id);
 
-    OperatingSystems listOperatingSystems(int pageSize, int pageNumber, OrderBy orderBy);
+    OperatingSystems listOperatingSystems(int pageSize, int pageNumber, OrderBy orderBy, String dataCenterId);
 }
