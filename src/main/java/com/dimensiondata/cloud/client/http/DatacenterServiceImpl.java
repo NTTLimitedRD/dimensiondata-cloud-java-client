@@ -1,5 +1,8 @@
 package com.dimensiondata.cloud.client.http;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.dimensiondata.cloud.client.DatacenterService;
 import com.dimensiondata.cloud.client.OrderBy;
 import com.dimensiondata.cloud.client.Param;
@@ -7,12 +10,11 @@ import com.dimensiondata.cloud.client.model.DatacenterType;
 import com.dimensiondata.cloud.client.model.Datacenters;
 import com.dimensiondata.cloud.client.model.OperatingSystems;
 
-import java.util.Collections;
-import java.util.List;
-
 public class DatacenterServiceImpl extends AbstractRestfulService implements DatacenterService
 {
     public static final String PARAMETER_ID = "id";
+    public static final String DATACENTER_ID= "datacenterId";
+
     public static final List<String> ORDER_BY_PARAMETERS = Collections.unmodifiableList(Collections.singletonList(PARAMETER_ID));
 
 
@@ -39,12 +41,14 @@ public class DatacenterServiceImpl extends AbstractRestfulService implements Dat
     }
 
     @Override
-    public OperatingSystems listOperatingSystems(int pageSize, int pageNumber, OrderBy orderBy)
+    public OperatingSystems listOperatingSystems(int pageSize, int pageNumber, OrderBy orderBy, String dataCenterId)
     {
         // TODO validate parameters
         return httpClient.get("infrastructure/operatingSystem", OperatingSystems.class,
                 new Param(Param.PAGE_SIZE, pageSize),
                 new Param(Param.PAGE_NUMBER, pageNumber),
-                new Param(Param.ORDER_BY, orderBy.concatenateParameters()));
+                new Param(Param.ORDER_BY, orderBy.concatenateParameters()),
+                new Param(DATACENTER_ID, dataCenterId)
+        );
     }
 }

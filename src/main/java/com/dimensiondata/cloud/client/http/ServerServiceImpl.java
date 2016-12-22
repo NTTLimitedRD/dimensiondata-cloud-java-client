@@ -1,18 +1,35 @@
 package com.dimensiondata.cloud.client.http;
 
-import com.dimensiondata.cloud.client.*;
-import com.dimensiondata.cloud.client.model.*;
-import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-
-import javax.ws.rs.client.*;
-import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
+import com.dimensiondata.cloud.client.ClientRuntimeException;
+import com.dimensiondata.cloud.client.Filter;
+import com.dimensiondata.cloud.client.OrderBy;
+import com.dimensiondata.cloud.client.Param;
+import com.dimensiondata.cloud.client.ServerService;
+import com.dimensiondata.cloud.client.UserSession;
+import com.dimensiondata.cloud.client.model.AddDiskType;
+import com.dimensiondata.cloud.client.model.AddNicType;
+import com.dimensiondata.cloud.client.model.AntiAffinityRules;
+import com.dimensiondata.cloud.client.model.DeployServerType;
+import com.dimensiondata.cloud.client.model.NotifyNicIpChangeType;
+import com.dimensiondata.cloud.client.model.ReconfigureServerType;
+import com.dimensiondata.cloud.client.model.ResponseType;
+import com.dimensiondata.cloud.client.model.ServerType;
+import com.dimensiondata.cloud.client.model.Servers;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import static org.glassfish.jersey.client.authentication.HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD;
 import static org.glassfish.jersey.client.authentication.HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME;
 
@@ -159,6 +176,14 @@ public class ServerServiceImpl extends AbstractRestfulService implements ServerS
     }
 
     @Override
+    public ResponseType addDisk(AddDiskType addDisk)
+    {
+        return httpClient.post("server/addDisk",
+            new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "addDisk"), AddDiskType.class, addDisk),
+            ResponseType.class);
+    }
+
+    @Override
     public ResponseType removeNic(String id)
     {
         return httpClient.post("server/removeNic",
@@ -246,7 +271,7 @@ public class ServerServiceImpl extends AbstractRestfulService implements ServerS
     @Override
     public String getIdFromDeployResponse(ResponseType response)
     {
-        assertParameterEquals("Operation", "DEPLOY", response.getOperation());
+        assertParameterEquals("Operation", "DEPLOY_SERVER", response.getOperation());
         assertParameterEquals("ResponseCode", "IN_PROGRESS", response.getResponseCode());
         return findRequiredNameValuePair("serverId", response.getInfo()).getValue();
     }
