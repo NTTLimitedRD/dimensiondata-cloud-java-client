@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="urn:didata.com:api:cloud:types"
+           xmlns:cloudapi="urn:didata.com:api:cloud:types"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="1.0">
+
+    <xs:include schemaLocation="general.xsd"/>
+
+    <xs:complexType name="GeographicRegionType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="cloudApiHost" type="xs:string"/>
+            <xs:element name="cloudUiUrl" type="xs:string"/>
+            <xs:element name="monitoringUrl" type="xs:string" minOccurs="0"/>
+            <xs:element name="ftpsHost" type="xs:string"/>
+            <xs:element name="timeZone" type="xs:string"/>
+            <xs:element name="state" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="isHome" type="xs:boolean" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="geographicRegion" type="cloudapi:GeographicRegionType"/>
+
+    <xs:element name="geographicRegions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="geographicRegion" type="cloudapi:GeographicRegionType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

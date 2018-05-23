@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="urn:didata.com:api:cloud:types"
+           xmlns:cloudapi="urn:didata.com:api:cloud:types"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="1.0">
+
+    <xs:include schemaLocation="general.xsd"/>
+
+    <xs:element name="sslOffloadProfile" type="cloudapi:SslOffloadProfileType"/>
+
+    <xs:element name="sslOffloadProfiles">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="sslOffloadProfile" type="cloudapi:SslOffloadProfileType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="SslOffloadProfileType">
+        <xs:sequence>
+            <xs:element name="networkDomainId" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:element name="sslDomainCertificate">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                    </xs:sequence>
+                    <xs:attribute name="id" type="xs:string" use="required"/>
+                    <xs:attribute name="expiryTime" type="xs:dateTime" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="sslCertificateChain" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                    </xs:sequence>
+                    <xs:attribute name="id" type="xs:string" use="required"/>
+                    <xs:attribute name="expiryTime" type="xs:dateTime" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ciphers" type="xs:string"/>
+            <xs:element name="state" type="xs:string"/>
+            <xs:element name="createTime" type="xs:dateTime"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="datacenterId" type="xs:string" use="required"/>
+    </xs:complexType>
+    
+    <xs:element name="createSslOffloadProfile">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="networkDomainId" type="xs:string"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="description" type="xs:string" minOccurs="0"/>
+                <xs:element name="ciphers" type="xs:string" minOccurs="0"/>
+                <xs:element name="sslDomainCertificateId" type="xs:string"/>
+                <xs:element name="sslCertificateChainId" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteSslOffloadProfile" type="cloudapi:IdType"/>
+
+    <xs:element name="editSslOffloadProfile">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string" minOccurs="0"/>
+                <xs:element name="description" type="xs:string" minOccurs="0" nillable="true"/>
+                <xs:element name="ciphers" type="xs:string" minOccurs="0" nillable="true"/>
+                <xs:element name="sslDomainCertificateId" type="xs:string" minOccurs="0"/>
+                <xs:element name="sslCertificateChainId" type="xs:string" minOccurs="0" nillable="true"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
