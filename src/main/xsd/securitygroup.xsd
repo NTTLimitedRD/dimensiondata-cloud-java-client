@@ -12,7 +12,10 @@
     <xs:element name="createSecurityGroup">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="vlanId" type="xs:string"/>
+                <xs:choice>
+                    <xs:element name="vlanId" type="xs:string"/>
+                    <xs:element name="networkDomainId" type="xs:string"/>
+                </xs:choice>
                 <xs:element name="name" type="xs:string"/>
                 <xs:element name="description" type="xs:string" minOccurs="0"/>
             </xs:sequence>
@@ -39,18 +42,49 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="addServerToSecurityGroup">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="serverId" type="xs:string"/>
+            </xs:sequence>
+            <xs:attribute name="securityGroupId" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="removeServerFromSecurityGroup">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="serverId" type="xs:string"/>
+            </xs:sequence>
+            <xs:attribute name="securityGroupId" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
     <xs:complexType name="SecurityGroupType">
         <xs:sequence>
             <xs:element name="name" type="xs:string"/>
             <xs:element name="description" type="xs:string"/>
             <xs:element name="state" type="xs:string"/>
+            <xs:choice>
+                <xs:element name="nics" type="cloudapi:SecurityGroupNicsType"/>
+                <xs:element name="servers" type="cloudapi:SecurityGroupServersType"/>
+            </xs:choice>
+            <xs:element name="createTime" type="xs:dateTime"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="datacenterId" type="xs:string" use="required"/>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="SecurityGroupNicsType">
+        <xs:sequence>
             <xs:element name="nic" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="server">
                             <xs:complexType>
                                 <xs:sequence>
-                                    <xs:element name="name" type="xs:string" />
+                                    <xs:element name="name" type="xs:string"/>
                                 </xs:sequence>
                                 <xs:attribute name="id" type="xs:string" use="required"/>
                             </xs:complexType>
@@ -62,31 +96,42 @@
                     <xs:attribute name="primary" type="xs:boolean" use="required"/>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="vlanId" type="xs:string" />
-            <xs:element name="createTime" type="xs:dateTime"/>
         </xs:sequence>
-        <xs:attribute name="id" type="xs:string" use="required"/>
-        <xs:attribute name="datacenterId" type="xs:string" use="required"/>
+        <xs:attribute name="vlanId" type="xs:string"/>
     </xs:complexType>
 
-    <xs:element name="securityGroup" type="cloudapi:SecurityGroupType" />
+    <xs:complexType name="SecurityGroupServersType">
+        <xs:sequence>
+            <xs:element name="server" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                    </xs:sequence>
+                    <xs:attribute name="id" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="networkDomainId" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:element name="securityGroup" type="cloudapi:SecurityGroupType"/>
 
     <xs:element name="securityGroups">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="securityGroup" type="cloudapi:SecurityGroupType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="securityGroup" type="cloudapi:SecurityGroupType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
         </xs:complexType>
     </xs:element>
-    
+
     <xs:element name="editSecurityGroup">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="name" type="xs:string" minOccurs="0" />
-                <xs:element name="description" type="xs:string" minOccurs="0" nillable="true" />
+                <xs:element name="name" type="xs:string" minOccurs="0"/>
+                <xs:element name="description" type="xs:string" minOccurs="0" nillable="true"/>
             </xs:sequence>
-            <xs:attribute name="id" type="xs:string" use="required" />
+            <xs:attribute name="id" type="xs:string" use="required"/>
         </xs:complexType>
     </xs:element>
 

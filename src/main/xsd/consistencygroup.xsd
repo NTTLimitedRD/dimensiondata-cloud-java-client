@@ -44,7 +44,14 @@
             </xs:element>
             <xs:element name="createTime" type="xs:dateTime"/>
             <xs:element name="operationStatus" type="xs:string"/>
-            <xs:element name="drsInfrastructureStatus" type="xs:string" minOccurs="0"/>
+            <xs:element name="drsInfrastructure" minOccurs="0">
+                <xs:complexType>
+                    <xs:attribute name="enabled" type="xs:boolean" use="required"/>
+                    <xs:attribute name="status" type="xs:string" use="required"/>
+                    <xs:attribute name="updateTime" type="xs:dateTime" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="drsStatusCheckFailureCount" type="xs:int"/>
             <xs:element name="state" type="xs:string"/>
             <xs:element name="progress" type="cloudapi:ProgressType" minOccurs="0"/>
         </xs:sequence>
@@ -127,4 +134,12 @@
 
     <xs:element name="deleteConsistencyGroup" type="cloudapi:IdType"/>
 
+    <xs:element name="expandJournal" type="cloudapi:ExpandJournalType"/>
+
+    <xs:complexType name="ExpandJournalType">
+        <xs:sequence>
+            <xs:element name="sizeGb" type="xs:int"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
 </xs:schema>

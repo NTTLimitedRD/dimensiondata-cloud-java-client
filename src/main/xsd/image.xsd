@@ -27,21 +27,120 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:complexType name="ImageControllerType">
+        <xs:attributeGroup ref="cloudapi:StorageControllerAttributeGroup"/>
+    </xs:complexType>
+
+    <xs:complexType name="ImageScsiControllerType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ImageControllerType">
+                <xs:sequence>
+                    <xs:element name="disk" type="cloudapi:ImageScsiDiskType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="busNumber" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ImageSataControllerType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ImageControllerType">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="device" type="cloudapi:ImageSataDeviceType"/>
+                    <xs:element name="disk" type="cloudapi:ImageSataDiskType"/>
+                </xs:choice>
+                <xs:attribute name="busNumber" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ImageIdeControllerType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ImageControllerType">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="device" type="cloudapi:ImageIdeDeviceType"/>
+                    <xs:element name="disk" type="cloudapi:ImageIdeDiskType"/>
+                </xs:choice>
+                <xs:attribute name="channel" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!--Image Devices-->
+
+    <xs:complexType name="ImageDeviceType">
+        <xs:attributeGroup ref="cloudapi:StorageControllerDeviceAttributeGroup"/>
+    </xs:complexType>
+
+    <xs:complexType name="ImageSataDeviceType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ImageDeviceType">
+                <xs:attribute name="sataId" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ImageIdeDeviceType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ImageDeviceType">
+                <xs:attribute name="slot" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ImageFloppyType">
+        <xs:attributeGroup ref="cloudapi:FloppyAttributeGroup"/>
+    </xs:complexType>
+
+    <!--Image Disks-->
+    <xs:complexType name="ImageDiskType">
+        <xs:attributeGroup ref="cloudapi:StorageControllerDiskAttributeGroup"/>
+    </xs:complexType>
+
+    <xs:complexType name="ImageScsiDiskType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ImageDiskType">
+                <xs:attribute name="scsiId" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ImageSataDiskType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ImageDiskType">
+                <xs:attribute name="sataId" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ImageIdeDiskType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ImageDiskType">
+                <xs:attribute name="slot" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:complexType name="ImageType">
         <xs:sequence>
             <xs:element name="name" type="xs:string"/>
             <xs:element name="description" type="xs:string" minOccurs="0"/>
-            <xs:element name="operatingSystem" type="cloudapi:OperatingSystemType"/>
+            <xs:element name="cluster" type="cloudapi:ClusterType" minOccurs="0"/>
             <xs:element name="cpu" type="cloudapi:CpuType"/>
             <xs:element name="memoryGb" type="xs:unsignedInt"/>
-            <xs:element name="disk" maxOccurs="unbounded">
+
+            <xs:element name="scsiController" type="cloudapi:ImageScsiControllerType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="sataController" type="cloudapi:ImageSataControllerType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="ideController" type="cloudapi:ImageIdeControllerType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="floppy" type="cloudapi:ImageFloppyType" minOccurs="0" maxOccurs="unbounded"/>
+
+            <xs:element name="nic" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
-                    <xs:attribute name="id" type="xs:string" use="required"/>
-                    <xs:attribute name="scsiId" type="xs:int" use="required"/>
-                    <xs:attribute name="sizeGb" type="xs:int" use="required"/>
-                    <xs:attribute name="speed" type="xs:string" use="required"/>
+                    <xs:attribute name="networkAdapter" type="xs:string" use="required"/>
+                    <xs:attribute name="key" type="xs:int"/>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="specialTrait" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="softwareLabel" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="createTime" type="xs:dateTime"/>
         </xs:sequence>
@@ -54,6 +153,15 @@
             <xs:extension base="cloudapi:ImageType">
                 <xs:sequence>
                     <xs:element name="osImageKey" type="xs:string"/>
+                    <xs:element name="sortOrder" type="xs:int"/>
+                    <xs:element name="guest">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="operatingSystem" type="cloudapi:OperatingSystemType"/>
+                            </xs:sequence>
+                            <xs:attribute name="osCustomization" type="xs:boolean" use="required"/>
+                        </xs:complexType>
+                    </xs:element>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -63,6 +171,9 @@
         <xs:complexContent>
             <xs:extension base="cloudapi:ImageType">
                 <xs:sequence>
+                    <xs:element name="state" type="xs:string"/>
+                    <xs:element name="guest" type="cloudapi:GuestType"/>
+                    <xs:element name="virtualHardware" type="cloudapi:VirtualHardwareType" minOccurs="0"/>
                     <xs:element name="source">
                         <xs:complexType>
                             <xs:sequence>
@@ -77,10 +188,8 @@
                             <xs:attribute name="type" type="xs:string" use="required"/>
                         </xs:complexType>
                     </xs:element>
-                    <xs:element name="state" type="xs:string"/>
+                    <xs:element name="tag" type="cloudapi:TagWithIdAndNameType" minOccurs="0" maxOccurs="unbounded"/>
                     <xs:element name="progress" type="cloudapi:ProgressType" minOccurs="0"/>
-                    <xs:element name="vmwareTools" type="cloudapi:VmwareToolsType" minOccurs="0"/>
-                    <xs:element name="virtualHardware" type="cloudapi:VirtualHardwareType" minOccurs="0"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -90,32 +199,312 @@
 
     <xs:element name="osImage" type="cloudapi:OsImageType"/>
 
-    <xs:complexType name="ImageMetadataType">
+    <xs:complexType name="EditImageMetadataType">
         <xs:sequence>
             <xs:element name="description" type="xs:string" minOccurs="0" nillable="true"/>
             <xs:element name="cpuSpeed" type="xs:string" minOccurs="0"/>
             <xs:element name="operatingSystemId" type="xs:string" minOccurs="0"/>
             <xs:element name="disk" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
-                    <xs:attribute name="scsiId" type="xs:unsignedShort" use="required"/>
+                    <xs:attribute name="id" type="xs:string" use="required"/>
                     <xs:attribute name="speed" type="xs:string" use="required"/>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string" use="required"/>
     </xs:complexType>
+    <xs:element name="editImageMetadata" type="cloudapi:EditImageMetadataType"/>
 
-    <xs:element name="imageMetadata" type="cloudapi:ImageMetadataType"/>
+    <xs:element name="importImage" type="cloudapi:ImportImageType"/>
 
-    <xs:element name="operatingSystems">
+    <xs:complexType name="ImportImageType">
+        <xs:sequence>
+            <xs:element name="ovfPackage" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:choice>
+                <xs:element name="datacenterId" type="xs:string"/>
+                <xs:element name="clusterId" type="xs:string"/>
+            </xs:choice>
+            <xs:element name="guestOsCustomization" type="xs:boolean" minOccurs="0"/>
+            <xs:group ref="cloudapi:TagGroup" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="moveCustomerImage" type="cloudapi:MoveCustomerImageType"/>
+
+    <xs:complexType name="MoveCustomerImageType">
+        <xs:sequence>
+            <xs:element name="targetClusterId" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="exportImage" type="cloudapi:ExportImageType"/>
+    <xs:complexType name="ExportImageType">
+        <xs:sequence>
+            <xs:element name="imageId" type="xs:string"/>
+            <xs:element name="ovfPackagePrefix" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="ovfPackage" type="cloudapi:OvfPackageType"/>
+
+    <xs:complexType name="OvfPackageType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="lastModifiedTime" type="xs:dateTime" use="required"/>
+        <xs:attribute name="expiryTime" type="xs:dateTime" use="required"/>
+        <xs:attribute name="status" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="ovfPackages">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="operatingSystem" type="cloudapi:OperatingSystemType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="ovfPackage" type="cloudapi:OvfPackageType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="totalCount" type="xs:int" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="imageExportsInProgress">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="imageExportInProgress" type="cloudapi:ImageExportInProgressType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="operatingSystem" type="cloudapi:OperatingSystemType"/>
+    <xs:complexType name="ImageExportInProgressType">
+        <xs:sequence>
+            <xs:element name="ovfPackagePrefix" type="xs:string"/>
+            <xs:element name="imageSummary">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                        <xs:element name="description" type="xs:string" minOccurs="0"/>
+                        <xs:element name="operatingSystem">
+                            <xs:complexType>
+                                <xs:attribute name="id" type="xs:string" use="required"/>
+                                <xs:attribute name="displayName" type="xs:string" use="required"/>
+                                <xs:attribute name="family" type="xs:string" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="id" type="xs:string" use="required"/>
+                    <xs:attribute name="datacenterId" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="progress" type="cloudapi:ProgressType"/>
+        </xs:sequence>
+        <xs:attribute name="imageExportId" type="xs:string" use="required"/>
+    </xs:complexType>
 
+    <xs:element name="historicalImageExports">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="historicalImageExport" type="cloudapi:HistoricalImageExportType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="HistoricalImageExportType">
+        <xs:sequence>
+            <xs:element name="ovfPackagePrefix" type="xs:string"/>
+            <xs:element name="userName" type="xs:string"/>
+            <xs:element name="imageSummary">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                        <xs:element name="description" type="xs:string" minOccurs="0"/>
+                        <xs:element name="cluster" type="cloudapi:ClusterType" minOccurs="0"/>
+                        <xs:element name="cpu" type="cloudapi:CpuType"/>
+                        <xs:element name="memoryGb" type="xs:unsignedInt"/>
+                        <xs:element name="scsiController" type="cloudapi:HistoricalImageExportScsiControllerType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="sataController" type="cloudapi:HistoricalImageExportSataControllerType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="ideController" type="cloudapi:HistoricalImageExportIdeControllerType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="floppy" type="cloudapi:HistoricalImageExportFloppyType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="nic" minOccurs="0" maxOccurs="unbounded">  <!-- note: generally there will be 0 nic elements for MCP 1.0 Images, 1 or more for MCP 2.0 Images -->
+                            <xs:complexType>
+                                <xs:attribute name="networkAdapter" type="xs:string" use="required"/>
+                                <xs:attribute name="key" type="xs:int"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="guest">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="operatingSystem">
+                                        <xs:complexType>
+                                            <xs:attribute name="id" type="xs:string" use="required"/>
+                                            <xs:attribute name="displayName" type="xs:string" use="required"/>
+                                            <xs:attribute name="family" type="xs:string" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+                                    <xs:element name="vmTools" type="cloudapi:VmToolsType" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:attribute name="osCustomization" type="xs:boolean" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="specialTrait" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="softwareLabel" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="tag" type="cloudapi:TagWithIdAndNameType" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                    <xs:attribute name="id" type="xs:string" use="required"/>
+                    <xs:attribute name="datacenterId" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="responseCode" type="xs:string"/>
+            <xs:choice>
+                <xs:element name="success"> <!-- export completed successfully choice option -->
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="outputFile" type="cloudapi:HistoricalImageExportFileType" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="failure"> <!-- export failed choice option -->
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="message" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="imageExportId" type="xs:string" use="required"/>
+        <xs:attribute name="startTime" type="xs:dateTime" use="required"/>
+        <xs:attribute name="endTime" type="xs:dateTime" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportFileType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+        <xs:attribute name="sizeBytes" type="xs:long" use="required"/>
+        <xs:attribute name="lastModifiedTime" type="xs:dateTime" use="required"/>
+        <xs:attribute name="expiryTime" type="xs:dateTime" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportFloppyType">
+        <xs:attribute name="driveNumber" type="xs:int" use="required"/>
+        <xs:attribute name="key" type="xs:int" use="required"/>
+        <xs:attribute name="sizeGb" type="xs:int"/>
+        <xs:attribute name="fileName" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportDeviceType">
+        <xs:attribute name="type" type="xs:string" use="required"/>
+        <xs:attribute name="sizeGb" type="xs:int"/>
+        <xs:attribute name="fileName" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportSataDeviceType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:HistoricalImageExportDeviceType">
+                <xs:attribute name="sataId" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportIdeDeviceType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:HistoricalImageExportDeviceType">
+                <xs:attribute name="slot" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportDiskType">
+        <xs:attribute name="sizeGb" type="xs:int" use="required"/>
+        <xs:attribute name="speed" type="xs:string" use="required"/>
+        <xs:attribute name="iops" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportScsiDiskType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:HistoricalImageExportDiskType">
+                <xs:attribute name="scsiId" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportSataDiskType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:HistoricalImageExportDiskType">
+                <xs:attribute name="sataId" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportIdeDiskType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:HistoricalImageExportDiskType">
+                <xs:attribute name="slot" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportControllerType">
+        <xs:attribute name="adapterType" type="xs:string" use="required"/>
+        <xs:attribute name="key" type="xs:int" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportScsiControllerType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:HistoricalImageExportControllerType">
+                <xs:sequence>
+                    <xs:element name="disk" type="cloudapi:HistoricalImageExportScsiDiskType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="busNumber" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportSataControllerType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:HistoricalImageExportControllerType">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="device" type="cloudapi:HistoricalImageExportSataDeviceType"/>
+                    <xs:element name="disk" type="cloudapi:HistoricalImageExportSataDiskType"/>
+                </xs:choice>
+                <xs:attribute name="busNumber" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="HistoricalImageExportIdeControllerType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:HistoricalImageExportControllerType">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="device" type="cloudapi:HistoricalImageExportIdeDeviceType"/>
+                    <xs:element name="disk" type="cloudapi:HistoricalImageExportIdeDiskType"/>
+                </xs:choice>
+                <xs:attribute name="channel" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="copyImage" type="cloudapi:CopyImageType"/>
+
+    <xs:complexType name="CopyImageType">
+        <xs:sequence>
+            <xs:element name="targetImageName" type="xs:string"/>
+            <xs:element name="targetImageDescription" type="xs:string" minOccurs="0"/>
+            <xs:choice>
+                <xs:element name="datacenterId" type="xs:string"/>
+                <xs:element name="clusterId" type="xs:string"/>
+            </xs:choice>
+            <xs:element name="ovfPackagePrefix" type="xs:string" minOccurs="0"/>
+            <xs:group ref="cloudapi:TagGroup" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="sourceImageId" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="cleanCustomerImage" type="cloudapi:IdType"/>
+
+    <xs:element name="deleteCustomerImage" type="cloudapi:IdType"/>
 </xs:schema>

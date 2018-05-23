@@ -19,15 +19,16 @@
     </xs:element>
 
     <xs:complexType name="ReservedPrivateIpv4AddressType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="datacenterId" type="xs:string" use="required"/>
-                <!-- networkId and vlanId are mutually exclusive alternatives. They could have been modelled using
-                "choice" but for payload compactness we have used attributes: -->
-                <xs:attribute name="networkId" type="xs:string"/>
-                <xs:attribute name="vlanId" type="xs:string"/>
-            </xs:extension>
-        </xs:simpleContent>
+        <xs:sequence>
+            <xs:element name="ipAddress" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:choice>
+                <xs:element name="networkId" type="xs:string"/>
+                <xs:element name="vlanId" type="xs:string"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="datacenterId" type="xs:string" use="required"/>
+        <xs:attribute name="exclusive" type="xs:boolean" use="required"/>
     </xs:complexType>
 
     <xs:element name="reservedIpv6Addresses">
@@ -40,12 +41,13 @@
     </xs:element>
 
     <xs:complexType name="ReservedIpv6AddressType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                 <xs:attribute name="datacenterId" type="xs:string" use="required" />
-                 <xs:attribute name="vlanId" type="xs:string"/>
-            </xs:extension>
-        </xs:simpleContent>
+        <xs:sequence>
+            <xs:element name="ipAddress" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="datacenterId" type="xs:string" use="required"/>
+        <xs:attribute name="vlanId" type="xs:string" use="required"/>
+        <xs:attribute name="exclusive" type="xs:boolean" use="required"/>
     </xs:complexType>
 
     <xs:element name="reservedPublicIpv4Addresses">
@@ -78,6 +80,7 @@
                 <xs:element name="vlanId" type="xs:string"/>
             </xs:choice>
             <xs:element name="ipAddress" type="xs:string" minOccurs="0"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -86,6 +89,7 @@
         <xs:sequence>
             <xs:element name="vlanId" type="xs:string"/>
             <xs:element name="ipAddress" type="xs:string" minOccurs="0"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 

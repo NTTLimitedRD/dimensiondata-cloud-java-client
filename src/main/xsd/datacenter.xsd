@@ -20,30 +20,53 @@
             <xs:element name="networking" type="cloudapi:NetworkingType"/>
             <xs:element name="hypervisor" type="cloudapi:HypervisorType"/>
             <xs:element name="backup" type="cloudapi:BackupType" minOccurs="0"/>
-            <xs:element name="consoleAccess" type="cloudapi:ConsoleAccessType" minOccurs="0"/>
-            <xs:element name="monitoring" type="cloudapi:MonitoringType" minOccurs="0"/>
+            <xs:element name="consoleAccess" type="cloudapi:DatacenterFeatureType" minOccurs="0"/>
+            <xs:element name="monitoring" type="cloudapi:DatacenterFeatureType" minOccurs="0"/>
+            <xs:element name="snapshot" type="cloudapi:DatacenterFeatureType" minOccurs="0"/>
             <xs:element name="drs" type="cloudapi:DrsType" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string" use="required"/>
         <xs:attribute name="type" type="xs:string" use="required"/>
     </xs:complexType>
 
-    <xs:complexType name="NetworkingType">
+    <xs:complexType name="DatacenterFeatureType">
         <xs:sequence>
             <xs:element name="property" type="cloudapi:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="type" type="xs:string" use="required"/>
         <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
     </xs:complexType>
 
+    <xs:complexType name="NetworkingType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:DatacenterFeatureType">
+                <xs:attribute name="type" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:complexType name="HypervisorType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:DatacenterFeatureType">
+                <xs:sequence>
+                    <xs:element name="diskSpeed" type="cloudapi:DiskSpeedType" maxOccurs="unbounded"/>
+                    <xs:element name="cpuSpeed" type="cloudapi:CpuSpeedType" maxOccurs="unbounded"/>
+                    <xs:element name="cluster" type="cloudapi:DatacenterClusterType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="type" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DatacenterClusterType">
         <xs:sequence>
+            <xs:element name="displayName" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
             <xs:element name="diskSpeed" type="cloudapi:DiskSpeedType" maxOccurs="unbounded"/>
             <xs:element name="cpuSpeed" type="cloudapi:CpuSpeedType" maxOccurs="unbounded"/>
             <xs:element name="property" type="cloudapi:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="type" type="xs:string" use="required"/>
-        <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="default" type="xs:boolean" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="DiskSpeedType">
@@ -52,10 +75,21 @@
             <xs:element name="abbreviation" type="xs:string"/>
             <xs:element name="description" type="xs:string"/>
             <xs:element name="unavailableReason" type="xs:string" minOccurs="0"/>
+            <xs:element name="variableIopLimits" type="cloudapi:VariableIopLimitsType" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string" use="required"/>
         <xs:attribute name="default" type="xs:boolean" use="required"/>
         <xs:attribute name="available" type="xs:boolean" use="required"/>
+        <xs:attribute name="variableIops" type="xs:boolean" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="VariableIopLimitsType">
+        <xs:sequence>
+            <xs:element name="minDiskIops" type="xs:int"/>
+            <xs:element name="maxDiskIops" type="xs:int"/>
+            <xs:element name="minIopsPerGb" type="xs:int"/>
+            <xs:element name="maxIopsPerGb" type="xs:int"/>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="CpuSpeedType">
@@ -70,33 +104,21 @@
     </xs:complexType>
 
     <xs:complexType name="BackupType">
-        <xs:sequence>
-            <xs:element name="property" type="cloudapi:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="type" type="xs:string" use="required"/>
-        <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
-    </xs:complexType>
-
-    <xs:complexType name="ConsoleAccessType">
-        <xs:sequence>
-            <xs:element name="property" type="cloudapi:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
-    </xs:complexType>
-
-    <xs:complexType name="MonitoringType">
-        <xs:sequence>
-            <xs:element name="property" type="cloudapi:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
+        <xs:complexContent>
+            <xs:extension base="cloudapi:DatacenterFeatureType">
+                <xs:attribute name="type" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="DrsType">
-        <xs:sequence>
-            <xs:element name="targetDatacenters" type="cloudapi:StringListType"/>
-            <xs:element name="property" type="cloudapi:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="maintenanceStatus" type="xs:string" use="required"/>
+        <xs:complexContent>
+            <xs:extension base="cloudapi:DatacenterFeatureType">
+                <xs:sequence>
+                    <xs:element name="targetDatacenters" type="cloudapi:StringListType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:element name="datacenters">
@@ -113,21 +135,81 @@
         <xs:attribute name="default" type="xs:boolean" use="required"/>
     </xs:complexType>
 
+    <xs:complexType name="StorageControllerAdapterType">
+        <xs:attribute name="adapterType" type="xs:string" use="required"/>
+        <xs:attribute name="default" type="xs:boolean" use="required"/>
+    </xs:complexType>
+
     <xs:complexType name="OperatingSystemDetailType">
         <xs:sequence>
             <xs:element name="displayName" type="xs:string"/>
-            <xs:element name="networkAdapter" type="cloudapi:NetworkAdapterType" maxOccurs="unbounded"/>
+            <xs:element name="networkAdapter" type="cloudapi:NetworkAdapterType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="scsiAdapterType" type="cloudapi:StorageControllerAdapterType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string" use="required"/>
         <xs:attribute name="family" type="xs:string" use="required"/>
+        <xs:attribute name="osUnitsGroupId" type="xs:string" use="required"/>
+        <xs:attribute name="supportsGuestOsCustomization" type="xs:boolean" use="required"/>
+        <xs:attribute name="supportsBackup" type="xs:boolean" use="required"/>
+        <xs:attribute name="supportsOvfImport" type="xs:boolean"/>
     </xs:complexType>
 
-    <xs:element name="OperatingSystemsDetails">
+    <xs:element name="operatingSystems">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="operatingSystemDetail" type="cloudapi:OperatingSystemDetailType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="operatingSystem" type="cloudapi:OperatingSystemDetailType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="SnapshotWindowType">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="dayOfWeek" type="xs:string" use="required"/>
+        <xs:attribute name="startHour" type="cloudapi:HourOfDayType" use="required"/>
+        <xs:attribute name="timeZone" type="xs:string" use="required"/>
+        <xs:attribute name="availabilityStatus" type="xs:string" use="required"/>
+        <xs:attribute name="availableSlotCount" type="xs:int" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="snapshotWindows">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="snapshotWindow" type="cloudapi:SnapshotWindowType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="osUnitsGroups">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="osUnitsGroup" type="cloudapi:OsUnitsGroupType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="osUnitsGroup" type="cloudapi:OsUnitsGroupType"/>
+
+    <xs:complexType name="OsUnitsGroupType">
+        <xs:choice>
+            <xs:element name="noUsage" type="cloudapi:EmptyType"/>
+            <xs:element name="perCpu">
+                <xs:complexType>
+                    <xs:attribute name="unitsPerHour" type="xs:int" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="cpuRange" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="unitsPerHour" type="xs:int" use="required"/>
+                    <xs:attribute name="begin" type="xs:int" use="required"/>
+                    <xs:attribute name="end" type="xs:int"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="displayName" type="xs:string" use="required"/>
+    </xs:complexType>
+
 </xs:schema>

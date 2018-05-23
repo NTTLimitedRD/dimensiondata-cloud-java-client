@@ -1,11 +1,23 @@
 package com.dimensiondata.cloud.client.script;
 
-import com.dimensiondata.cloud.client.*;
-import com.dimensiondata.cloud.client.http.CallableDeletedState;
-import com.dimensiondata.cloud.client.model.*;
-
 import java.util.List;
 
+import com.dimensiondata.cloud.client.Cloud;
+import com.dimensiondata.cloud.client.Filter;
+import com.dimensiondata.cloud.client.OrderBy;
+import com.dimensiondata.cloud.client.Param;
+import com.dimensiondata.cloud.client.VlanService;
+import com.dimensiondata.cloud.client.http.CallableDeletedState;
+import com.dimensiondata.cloud.client.model.ReservedIpv6AddressType;
+import com.dimensiondata.cloud.client.model.ReservedIpv6Addresses;
+import com.dimensiondata.cloud.client.model.ReservedPrivateIpv4AddressType;
+import com.dimensiondata.cloud.client.model.ReservedPrivateIpv4Addresses;
+import com.dimensiondata.cloud.client.model.SecurityGroupType;
+import com.dimensiondata.cloud.client.model.SecurityGroups;
+import com.dimensiondata.cloud.client.model.UnreserveIpv6AddressType;
+import com.dimensiondata.cloud.client.model.UnreservePrivateIpv4AddressType;
+import com.dimensiondata.cloud.client.model.VlanType;
+import com.dimensiondata.cloud.client.model.Vlans;
 import static com.dimensiondata.cloud.client.script.Script.*;
 
 public class DeleteAllVlansScript implements NetworkDomainScript
@@ -84,9 +96,9 @@ public class DeleteAllVlansScript implements NetworkDomainScript
         {
             UnreservePrivateIpv4AddressType unreservePrivateIpv4Address = new UnreservePrivateIpv4AddressType();
             unreservePrivateIpv4Address.setVlanId(address.getVlanId());
-            unreservePrivateIpv4Address.setIpAddress(address.getValue());
+            unreservePrivateIpv4Address.setIpAddress(address.getIpAddress());
             cloud.ipAddress().unreservePrivateIpv4Address(unreservePrivateIpv4Address);
-            println("Unreserved Private Ipv4 Address " + address.getValue());
+            println("Unreserved Private Ipv4 Address " + address.getIpAddress());
         }
     }
 
@@ -96,9 +108,9 @@ public class DeleteAllVlansScript implements NetworkDomainScript
         {
             UnreserveIpv6AddressType unreserveIpv6Address = new UnreserveIpv6AddressType();
             unreserveIpv6Address.setVlanId(address.getVlanId());
-            unreserveIpv6Address.setIpAddress(address.getValue());
+            unreserveIpv6Address.setIpAddress(address.getIpAddress());
             cloud.ipAddress().unreserveIpv6Address(unreserveIpv6Address);
-            println("Unreserved Ipv6 Address " + address.getValue());
+            println("Unreserved Ipv6 Address " + address.getIpAddress());
         }
     }
 }

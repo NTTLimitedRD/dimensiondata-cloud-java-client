@@ -69,20 +69,6 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="ApplyTagByIdType">
-        <xs:sequence>
-            <xs:element name="tagKeyId" type="xs:string"/>
-            <xs:element name="value" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="ApplyTagType">
-        <xs:sequence>
-            <xs:element name="tagKeyName" type="xs:string"/>
-            <xs:element name="value" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-    </xs:complexType>
-
     <xs:element name="applyTags">
         <xs:complexType>
             <xs:sequence>
