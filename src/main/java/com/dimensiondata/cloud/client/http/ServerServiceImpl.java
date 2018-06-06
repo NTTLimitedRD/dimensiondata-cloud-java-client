@@ -22,6 +22,7 @@ import com.dimensiondata.cloud.client.ServerService;
 import com.dimensiondata.cloud.client.UserSession;
 import com.dimensiondata.cloud.client.model.AddDiskType;
 import com.dimensiondata.cloud.client.model.AddNicType;
+import com.dimensiondata.cloud.client.model.AddScsiControllerType;
 import com.dimensiondata.cloud.client.model.AntiAffinityRules;
 import com.dimensiondata.cloud.client.model.DeployServerType;
 import com.dimensiondata.cloud.client.model.NotifyNicIpChangeType;
@@ -180,6 +181,14 @@ public class ServerServiceImpl extends AbstractRestfulService implements ServerS
     {
         return httpClient.post("server/addDisk",
             new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "addDisk"), AddDiskType.class, addDisk),
+            ResponseType.class);
+    }
+
+    @Override
+    public ResponseType addScsiController(AddScsiControllerType addController)
+    {
+        return httpClient.post("server/addScsiController",
+            new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "addScsiController"), AddScsiControllerType.class, addController),
             ResponseType.class);
     }
 
