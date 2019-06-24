@@ -156,6 +156,7 @@
                 <xs:complexType>
                     <xs:attribute name="id" type="xs:string" use="required"/>
                     <xs:attribute name="speed" type="xs:string" use="required"/>
+                    <xs:attribute name="iops"  type="xs:unsignedInt" use="optional"/>
                 </xs:complexType>
             </xs:element>
             <xs:element name="microsoftTimeZone" type="xs:string" minOccurs="0"/>
@@ -295,7 +296,8 @@
                 <xs:element name="ideController" type="cloudapi:IdeControllerType"/>
             </xs:choice>
             <xs:element name="sizeGb" type="xs:int"/>
-            <xs:element name="speed" type="xs:string" minOccurs="0"/>
+            <xs:element name="speed"  type="xs:string" minOccurs="0"/>
+            <xs:element name="iops"   type="xs:unsignedInt" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
