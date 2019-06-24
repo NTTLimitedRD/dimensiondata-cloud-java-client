@@ -24,6 +24,8 @@ import com.dimensiondata.cloud.client.model.AddDiskType;
 import com.dimensiondata.cloud.client.model.AddNicType;
 import com.dimensiondata.cloud.client.model.AddScsiControllerType;
 import com.dimensiondata.cloud.client.model.AntiAffinityRules;
+import com.dimensiondata.cloud.client.model.ChangeDiskIopsType;
+import com.dimensiondata.cloud.client.model.ChangeDiskSpeedType;
 import com.dimensiondata.cloud.client.model.DeployServerType;
 import com.dimensiondata.cloud.client.model.NotifyNicIpChangeType;
 import com.dimensiondata.cloud.client.model.ReconfigureServerType;
@@ -184,6 +186,18 @@ public class ServerServiceImpl extends AbstractRestfulService implements ServerS
             ResponseType.class);
     }
 
+    public ResponseType changeDiskSpeed(ChangeDiskSpeedType changeDiskSpeed) {
+        return httpClient.post("server/changeDiskSpeed",
+            new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "changeDiskSpeed"), ChangeDiskSpeedType.class, changeDiskSpeed),
+            ResponseType.class);
+    }
+
+    public ResponseType changeDiskIops(ChangeDiskIopsType changeDiskIops) {
+        return httpClient.post("server/changeDiskSpeed",
+            new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "changeDiskIops"), ChangeDiskIopsType.class, changeDiskIops),
+            ResponseType.class);
+    }
+    
     @Override
     public ResponseType addScsiController(AddScsiControllerType addController)
     {
