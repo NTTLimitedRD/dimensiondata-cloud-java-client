@@ -16,5 +16,5 @@ public interface ImageService
 
     CustomerImageType getCustomerImage(String id);
 
-    ResponseType editImageMetadata(ImageMetadataType imageMetadata);
+    ResponseType editImageMetadata(EditImageMetadataType imageMetadata);
 }

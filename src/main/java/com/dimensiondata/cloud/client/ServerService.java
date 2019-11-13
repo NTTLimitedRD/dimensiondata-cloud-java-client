@@ -4,7 +4,10 @@ import java.util.concurrent.Callable;
 
 import com.dimensiondata.cloud.client.model.AddDiskType;
 import com.dimensiondata.cloud.client.model.AddNicType;
+import com.dimensiondata.cloud.client.model.AddScsiControllerType;
 import com.dimensiondata.cloud.client.model.AntiAffinityRules;
+import com.dimensiondata.cloud.client.model.ChangeDiskIopsType;
+import com.dimensiondata.cloud.client.model.ChangeDiskSpeedType;
 import com.dimensiondata.cloud.client.model.DeployServerType;
 import com.dimensiondata.cloud.client.model.NotifyNicIpChangeType;
 import com.dimensiondata.cloud.client.model.ReconfigureServerType;
@@ -53,6 +56,12 @@ public interface ServerService
     ResponseType addNic(AddNicType addNic);
 
     ResponseType addDisk(AddDiskType addDisk);
+
+    ResponseType changeDiskSpeed(ChangeDiskSpeedType changeDiskSpeedType);
+
+    ResponseType changeDiskIops(ChangeDiskIopsType changeDiskIopsType);
+
+    ResponseType addScsiController(AddScsiControllerType addController);
 
     ResponseType removeNic(String id);
 

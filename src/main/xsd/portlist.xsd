@@ -21,13 +21,6 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:complexType name="EditPortRangeType">
-        <!-- begin is required, except for nil elements -->
-        <xs:attribute name="begin" type="xs:unsignedShort" />
-        <!-- if end is present, it implies a port range -->
-        <xs:attribute name="end" type="xs:unsignedShort"/>
-    </xs:complexType>
-
     <xs:element name="editPortList">
         <xs:complexType>
             <xs:sequence>

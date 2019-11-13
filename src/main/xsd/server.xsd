@@ -8,6 +8,7 @@
            jaxb:version="1.0">
 
     <xs:include schemaLocation="general.xsd"/>
+    <xs:include schemaLocation="antiaffinityrule.xsd"/>
 
     <xs:element name="server" type="cloudapi:ServerType"/>
 
@@ -24,18 +25,13 @@
         <xs:sequence>
             <xs:element name="name" type="xs:string"/>
             <xs:element name="description" type="xs:string" minOccurs="0"/>
-            <xs:element name="operatingSystem" type="cloudapi:OperatingSystemType"/>
+            <xs:element name="cluster" type="cloudapi:ClusterType" minOccurs="0"/>
             <xs:element name="cpu" type="cloudapi:CpuType"/>
             <xs:element name="memoryGb" type="xs:unsignedInt"/>
-            <xs:element name="disk" maxOccurs="unbounded">
-                <xs:complexType>
-                    <xs:attribute name="id" type="xs:string" use="required"/>
-                    <xs:attribute name="scsiId" type="xs:int" use="required"/>
-                    <xs:attribute name="sizeGb" type="xs:int" use="required"/>
-                    <xs:attribute name="speed" type="xs:string" use="required"/>
-                    <xs:attribute name="state" type="xs:string" use="required"/>
-                </xs:complexType>
-            </xs:element>
+            <xs:element name="scsiController" type="cloudapi:ServerScsiControllerType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="sataController" type="cloudapi:ServerSataControllerType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="ideController" type="cloudapi:ServerIdeControllerType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="floppy" type="cloudapi:ServerFloppyType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:choice>
                 <xs:element name="nic">
                     <xs:complexType>
@@ -43,7 +39,6 @@
                         <xs:attribute name="privateIpv4" type="xs:string" use="required"/>
                         <xs:attribute name="networkId" type="xs:string" use="required"/>
                         <xs:attribute name="networkName" type="xs:string" use="required"/>
-                        <xs:attribute name="macAddress" type="xs:string"/>
                         <xs:attribute name="state" type="xs:string" use="required"/>
                     </xs:complexType>
                 </xs:element>
@@ -72,14 +67,16 @@
                     <xs:attribute name="state" type="xs:string" use="required"/>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="snapshotService" type="cloudapi:SnapshotServiceType" minOccurs="0"/>
+            <xs:element name="specialTrait" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="softwareLabel" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="sourceImageId" type="xs:string" minOccurs="0"/>
+            <xs:element name="source" type="cloudapi:ServerSourceType"/>
             <xs:element name="createTime" type="xs:dateTime"/>
             <xs:element name="deployed" type="xs:boolean"/>
             <xs:element name="started" type="xs:boolean"/>
             <xs:element name="state" type="xs:string"/>
-            <xs:element name="progress" type="cloudapi:ProgressType" minOccurs="0"/>
-            <xs:element name="vmwareTools" type="cloudapi:VmwareToolsType" minOccurs="0"/>
+            <xs:element name="deploymentMode" type="xs:string" minOccurs="0"/>
+            <xs:element name="guest" type="cloudapi:GuestType"/>
             <xs:element name="virtualHardware" type="cloudapi:VirtualHardwareType" minOccurs="0"/>
             <xs:choice minOccurs="0">
                 <xs:element name="drsEligible">
@@ -94,6 +91,8 @@
                     </xs:complexType>
                 </xs:element>
             </xs:choice>
+            <xs:element name="tag" type="cloudapi:TagWithIdAndNameType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="progress" type="cloudapi:ProgressType" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string" use="required"/>
         <xs:attribute name="datacenterId" type="xs:string" use="required"/>
@@ -105,7 +104,10 @@
         <xs:attribute name="ipv6" type="xs:string" use="required"/>
         <xs:attribute name="vlanId" type="xs:string" use="required"/>
         <xs:attribute name="vlanName" type="xs:string" use="required"/>
+        <xs:attribute name="networkAdapter" type="xs:string"/>
+        <xs:attribute name="connected" type="xs:boolean" use="required"/>
         <xs:attribute name="macAddress" type="xs:string"/>
+        <xs:attribute name="key" type="xs:int"/>
         <xs:attribute name="state" type="xs:string" use="required"/>
     </xs:complexType>
 
@@ -116,6 +118,7 @@
             <xs:element name="name" type="xs:string"/>
             <xs:element name="description" type="xs:string" minOccurs="0"/>
             <xs:element name="imageId" type="xs:string"/>
+            <xs:element name="clusterId" type="xs:string" minOccurs="0"/>
             <xs:element name="start" type="xs:boolean"/>
             <xs:element name="administratorPassword" type="xs:string" minOccurs="0"/>
             <xs:element name="cpu" minOccurs="0">
@@ -138,8 +141,8 @@
                 <xs:element name="networkInfo">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="primaryNic" type="cloudapi:NewNicType"/>
-                            <xs:element name="additionalNic" type="cloudapi:NewNicType" minOccurs="0"
+                            <xs:element name="primaryNic" type="cloudapi:NewConnectedNicType"/>
+                            <xs:element name="additionalNic" type="cloudapi:NewConnectedNicType" minOccurs="0"
                                         maxOccurs="9"/>
                         </xs:sequence>
                         <xs:attribute name="networkDomainId" type="xs:string" use="required"/>
@@ -151,21 +154,34 @@
             <xs:element name="ipv4Gateway" type="xs:string" minOccurs="0"/>
             <xs:element name="disk" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
-                    <xs:attribute name="scsiId" type="xs:unsignedShort" use="required"/>
+                    <xs:attribute name="id" type="xs:string" use="required"/>
                     <xs:attribute name="speed" type="xs:string" use="required"/>
+                    <xs:attribute name="iops"  type="xs:unsignedInt" use="optional"/>
                 </xs:complexType>
             </xs:element>
             <xs:element name="microsoftTimeZone" type="xs:string" minOccurs="0"/>
+            <xs:group ref="cloudapi:TagGroup" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="NewConnectedNicType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="vlanId" type="xs:string"/>
+                <xs:element name="privateIpv4" type="xs:string"/>
+            </xs:choice>
+            <xs:element name="networkAdapter" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="NewNicType">
         <xs:sequence>
-        <xs:choice>
-            <xs:element name="vlanId" type="xs:string"/>
-            <xs:element name="privateIpv4" type="xs:string"/>
-        </xs:choice>
-        <xs:element name="networkAdapter" type="xs:string" minOccurs="0"/>
+            <xs:choice>
+                <xs:element name="vlanId" type="xs:string"/>
+                <xs:element name="privateIpv4" type="xs:string"/>
+            </xs:choice>
+            <xs:element name="networkAdapter" type="xs:string" minOccurs="0"/>
+            <xs:element name="connected" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -213,6 +229,22 @@
 
     <xs:element name="addNic" type="cloudapi:AddNicType"/>
 
+    <xs:complexType name="SetNicConnectivityType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="nic" type="cloudapi:SetConnectivityDetailsType" maxOccurs="unbounded"/>
+                <xs:element name="server" type="cloudapi:SetConnectivityDetailsType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SetConnectivityDetailsType">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="connected" type="xs:boolean" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="setNicConnectivity" type="cloudapi:SetNicConnectivityType"/>
+
     <xs:complexType name="EnableServerMonitoringType">
         <xs:sequence>
             <xs:element name="servicePlan" type="xs:string"/>
@@ -233,18 +265,45 @@
 
     <xs:element name="changeServerMonitoringPlan" type="cloudapi:ChangeServerMonitoringPlanType"/>
 
-    <xs:complexType name="AddDiskType">
+    <xs:complexType name="ScsiControllerType">
         <xs:sequence>
-            <xs:element name="sizeGb" type="xs:int"/>
-            <xs:element name="speed" type="xs:string" minOccurs="0"/>
+            <xs:element name="controllerId" type="xs:string"/>
             <xs:element name="scsiId" type="xs:int" minOccurs="0"/>
         </xs:sequence>
-        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="SataControllerType">
+        <xs:sequence>
+            <xs:element name="controllerId" type="xs:string"/>
+            <xs:element name="sataId" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="IdeControllerType">
+        <xs:sequence>
+            <xs:element name="controllerId" type="xs:string"/>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:element name="addDisk" type="cloudapi:AddDiskType"/>
 
+    <xs:complexType name="AddDiskType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="serverId" type="xs:string"/>
+                <xs:element name="scsiController" type="cloudapi:ScsiControllerType"/>
+                <xs:element name="sataController" type="cloudapi:SataControllerType"/>
+                <xs:element name="ideController" type="cloudapi:IdeControllerType"/>
+            </xs:choice>
+            <xs:element name="sizeGb" type="xs:int"/>
+            <xs:element name="speed"  type="xs:string" minOccurs="0"/>
+            <xs:element name="iops"   type="xs:unsignedInt" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:element name="removeDisk" type="cloudapi:IdType"/>
+
+    <xs:element name="removeFlpFile" type="cloudapi:IdType"/>
 
     <xs:element name="reconfigureServer" type="cloudapi:ReconfigureServerType"/>
 
@@ -304,5 +363,246 @@
             <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
         </xs:complexType>
     </xs:element>
+
+    <xs:element name="cloneServer" type="cloudapi:CloneServerType"/>
+
+    <xs:complexType name="CloneServerType">
+        <xs:sequence>
+            <xs:element name="imageName" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:element name="clusterId" type="xs:string" minOccurs="0"/>
+            <xs:element name="guestOsCustomization" type="xs:boolean" minOccurs="0"/>
+            <xs:group ref="cloudapi:TagGroup" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+
+    <xs:element name="deployUncustomizedServer" type="cloudapi:DeployUncustomizedServerType"/>
+
+    <xs:complexType name="DeployUncustomizedServerType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:element name="imageId" type="xs:string"/>
+            <xs:element name="clusterId" type="xs:string" minOccurs="0"/>
+            <xs:element name="start" type="xs:boolean"/>
+            <xs:element name="cpu" minOccurs="0">
+                <xs:complexType>
+                    <xs:attribute name="speed" type="xs:string"/>
+                    <xs:attribute name="count" type="xs:unsignedInt"/>
+                    <xs:attribute name="coresPerSocket" type="xs:unsignedInt"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="memoryGb" type="xs:unsignedInt" minOccurs="0"/>
+            <xs:element name="networkInfo">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="primaryNic" type="cloudapi:NewNicType"/>
+                        <xs:element name="additionalNic" type="cloudapi:NewNicType" minOccurs="0"
+                                    maxOccurs="9"/>
+                    </xs:sequence>
+                    <xs:attribute name="networkDomainId" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="disk" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="id" type="xs:string" use="required"/>
+                    <xs:attribute name="speed" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:group ref="cloudapi:TagGroup" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="moveServer" type="cloudapi:MoveServerType"/>
+
+    <xs:complexType name="MoveServerType">
+        <xs:sequence>
+            <xs:element name="targetClusterId" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="changeNetworkAdapter" type="cloudapi:changeNetworkAdapterType"/>
+
+    <xs:complexType name="changeNetworkAdapterType">
+        <xs:sequence>
+            <xs:element name="networkAdapter" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="nicId" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="exchangeNicVlans" type="cloudapi:ExchangeNicVlansType"/>
+
+    <xs:complexType name="ExchangeNicVlansType">
+        <xs:sequence>
+            <xs:element name="nicId1" type="xs:string"/>
+            <xs:element name="nicId2" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="changeDiskSpeed" type="cloudapi:ChangeDiskSpeedType"/>
+
+    <xs:complexType name="ChangeDiskSpeedType">
+        <xs:sequence>
+            <xs:element name="speed" type="xs:string"/>
+            <xs:element name="iops" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+    
+    <xs:element name="changeDiskIops" type="cloudapi:ChangeDiskIopsType"/>
+
+    <xs:complexType name="ChangeDiskIopsType">
+        <xs:sequence>
+            <xs:element name="iops" type="xs:int"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="expandDisk" type="cloudapi:ExpandDiskType"/>
+
+    <xs:complexType name="ExpandDiskType">
+        <xs:sequence>
+            <xs:element name="newSizeGb" type="xs:int"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <!--Server Controllers-->
+
+    <xs:complexType name="ServerControllerType">
+        <xs:attributeGroup ref="cloudapi:StorageControllerAttributeGroup"/>
+        <xs:attribute name="state" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="ServerScsiControllerType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ServerControllerType">
+                <xs:sequence>
+                    <xs:element name="disk" type="cloudapi:ServerScsiDiskType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="busNumber" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ServerSataControllerType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ServerControllerType">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="device" type="cloudapi:ServerSataDeviceType"/>
+                    <xs:element name="disk" type="cloudapi:ServerSataDiskType"/>
+                </xs:choice>
+                <xs:attribute name="busNumber" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ServerIdeControllerType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ServerControllerType">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="device" type="cloudapi:ServerIdeDeviceType"/>
+                    <xs:element name="disk" type="cloudapi:ServerIdeDiskType"/>
+                </xs:choice>
+                <xs:attribute name="channel" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!--Server Device Types-->
+
+    <xs:complexType name="ServerDeviceType">
+        <xs:attributeGroup ref="cloudapi:StorageControllerDeviceAttributeGroup"/>
+        <xs:attribute name="state" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="ServerSataDeviceType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ServerDeviceType">
+                <xs:attribute name="sataId" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ServerIdeDeviceType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ServerDeviceType">
+                <xs:attribute name="slot" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ServerFloppyType">
+        <xs:attributeGroup ref="cloudapi:FloppyAttributeGroup"/>
+        <xs:attribute name="state" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <!--Server Disks-->
+
+    <xs:complexType name="ServerDiskType">
+        <xs:attributeGroup ref="cloudapi:StorageControllerDiskAttributeGroup"/>
+        <xs:attribute name="state" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="ServerScsiDiskType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ServerDiskType">
+                <xs:attribute name="scsiId" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ServerSataDiskType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ServerDiskType">
+                <xs:attribute name="sataId" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ServerIdeDiskType">
+        <xs:complexContent>
+            <xs:extension base="cloudapi:ServerDiskType">
+                <xs:attribute name="slot" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="addScsiController" type="cloudapi:AddScsiControllerType"/>
+
+    <xs:complexType name="AddScsiControllerType">
+        <xs:sequence>
+            <xs:element name="serverId" type="xs:string"/>
+            <xs:element name="adapterType" type="xs:string"/>
+            <xs:element name="busNumber" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="removeScsiController" type="cloudapi:IdType"/>
+
+    <xs:element name="removeIsoFile" type="cloudapi:IdType"/>
+
+    <!-- Snapshot Service-->
+    <xs:complexType name="SnapshotServiceType">
+        <xs:sequence>
+            <xs:element name="window">
+                <xs:complexType>
+                    <xs:attribute name="dayOfWeek" type="xs:string" use="required"/>
+                    <xs:attribute name="startHour" type="xs:int" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="servicePlan" type="xs:string" use="required"/>
+        <xs:attribute name="state" type="xs:string" use="required"/>
+        <xs:attribute name="manualSnapshotInProgress" type="xs:boolean" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="ServerSourceType">
+        <xs:attribute name="type" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:string"/>
+    </xs:complexType>
 
 </xs:schema>

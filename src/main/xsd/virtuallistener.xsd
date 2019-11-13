@@ -3,7 +3,6 @@
            xmlns:cloudapi="urn:didata.com:api:cloud:types"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified"
-           attributeFormDefault="unqualified"
            xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
            jaxb:version="1.0">
 
@@ -27,11 +26,8 @@
                 <xs:element name="clientClonePoolId" type="xs:string" minOccurs="0"/>
                 <xs:element name="persistenceProfileId" type="xs:string" minOccurs="0"/>
                 <xs:element name="fallbackPersistenceProfileId" type="xs:string" minOccurs="0"/>
-                <xs:element name="optimizationProfile" minOccurs="0">
-                    <xs:simpleType>
-                        <xs:list itemType="xs:string"/>
-                    </xs:simpleType>
-                </xs:element>
+                <xs:element name="optimizationProfile" type="xs:string" minOccurs="0"/>
+                <xs:element name="sslOffloadProfileId" type="xs:string" minOccurs="0"/>
                 <xs:element name="iruleId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
@@ -49,11 +45,8 @@
                 <xs:element name="clientClonePoolId" type="xs:string" minOccurs="0" nillable="true"/>
                 <xs:element name="persistenceProfileId" type="xs:string" minOccurs="0" nillable="true"/>
                 <xs:element name="fallbackPersistenceProfileId" type="xs:string" minOccurs="0" nillable="true"/>
-                <xs:element name="optimizationProfile" minOccurs="0" nillable="true">
-                    <xs:simpleType>
-                        <xs:list itemType="xs:string"/>
-                    </xs:simpleType>
-                </xs:element>
+                <xs:element name="optimizationProfile" type="xs:string" minOccurs="0" nillable="true"/>
+                <xs:element name="sslOffloadProfileId" type="xs:string" minOccurs="0" nillable="true"/>
                 <xs:element name="iruleId" type="xs:string" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
             </xs:sequence>
             <xs:attribute name="id" type="xs:string" use="required"/>
@@ -76,7 +69,7 @@
             <xs:element name="networkDomainId" type="xs:string"/>
             <xs:element name="name" type="xs:string"/>
             <xs:element name="state" type="xs:string"/>
-            <xs:element name="description" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
             <xs:element name="createTime" type="xs:dateTime"/>
             <xs:element name="type" type="xs:string"/>
             <xs:element name="protocol" type="xs:string"/>
@@ -91,11 +84,8 @@
             <xs:element name="clientClonePool" type="cloudapi:PoolSummaryType" minOccurs="0"/>
             <xs:element name="persistenceProfile" type="cloudapi:IdAndNameType" minOccurs="0"/>
             <xs:element name="fallbackPersistenceProfile" type="cloudapi:IdAndNameType" minOccurs="0"/>
-            <xs:element name="optimizationProfile" minOccurs="0">
-                <xs:simpleType>
-                    <xs:list itemType="xs:string"/>
-                </xs:simpleType>
-            </xs:element>
+            <xs:element name="optimizationProfile" type="xs:string" minOccurs="0"/>
+            <xs:element name="sslOffloadProfile" type="cloudapi:IdAndNameType" minOccurs="0"/>
             <xs:element name="irule" type="cloudapi:IdAndNameType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string" use="required"/>

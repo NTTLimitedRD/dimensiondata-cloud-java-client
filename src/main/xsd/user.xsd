@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="urn:didata.com:api:cloud:types"
+           xmlns:cloudapi="urn:didata.com:api:cloud:types"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="1.0">
+
+    <xs:include schemaLocation="general.xsd"/>
+
+    <xs:element name="users">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="user" type="cloudapi:UserType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="cloudapi:PagedResultAttributes"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="user" type="cloudapi:UserType"/>
+
+    <xs:complexType name="UserType">
+        <xs:sequence>
+            <xs:element name="userName" type="xs:string"/>
+            <xs:element name="fullName" type="xs:string"/>
+            <xs:element name="firstName" type="xs:string"/>
+            <xs:element name="lastName" type="xs:string"/>
+            <xs:element name="emailAddress" type="xs:string"/>
+            <xs:element name="role" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="phone" type="cloudapi:PhoneType" minOccurs="0"/>
+            <xs:element name="department" type="xs:string" minOccurs="0"/>
+            <xs:element name="customDefined1" type="xs:string" minOccurs="0"/>
+            <xs:element name="customDefined2" type="xs:string" minOccurs="0"/>
+            <xs:element name="organization" type="cloudapi:OrganizationType" minOccurs="0"/>
+            <xs:element name="state" type="xs:string"/>
+            <xs:element name="createTime" type="xs:dateTime" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PhoneType">
+        <xs:attribute name="countryCode" type="xs:string" use="required"/>
+        <xs:attribute name="number" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="OrganizationType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="0"/>
+            <xs:element name="homeGeoName" type="xs:string" minOccurs="0"/>
+            <xs:element name="homeGeoApiHost" type="xs:string" minOccurs="0"/>
+            <xs:element name="homeGeoId" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="createUser" type="cloudapi:CreateUserType"/>
+
+    <xs:complexType name="CreateUserType">
+        <xs:sequence>
+            <xs:element name="userName" type="xs:string"/>
+            <xs:element name="password" type="xs:string"/>
+            <xs:element name="fullName" type="xs:string"/>
+            <xs:element name="firstName" type="xs:string"/>
+            <xs:element name="lastName" type="xs:string"/>
+            <xs:element name="emailAddress" type="xs:string"/>
+            <xs:element name="role" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="phone" type="cloudapi:PhoneType" minOccurs="0"/>
+            <xs:element name="department" type="xs:string" minOccurs="0"/>
+            <xs:element name="customDefined1" type="xs:string" minOccurs="0"/>
+            <xs:element name="customDefined2" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="editUser" type="cloudapi:EditUserType"/>
+
+    <xs:complexType name="EditUserType">
+        <xs:sequence>
+            <xs:element name="fullName" type="xs:string" minOccurs="0"/>
+            <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+            <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+            <xs:element name="emailAddress" type="xs:string" minOccurs="0"/>
+            <xs:element name="phone" minOccurs="0" nillable="true">
+                <xs:complexType>
+                    <xs:attribute name="countryCode" type="xs:string"/>
+                    <xs:attribute name="number" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="department" type="xs:string" minOccurs="0" nillable="true"/>
+            <xs:element name="customDefined1" type="xs:string" minOccurs="0" nillable="true"/>
+            <xs:element name="customDefined2" type="xs:string" minOccurs="0" nillable="true"/>
+        </xs:sequence>
+        <xs:attribute name="userName" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="setUserRoles" type="cloudapi:SetUserRolesType"/>
+
+    <xs:complexType name="SetUserRolesType">
+        <xs:sequence>
+            <xs:element name="role" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="userName" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="changeUserPassword" type="cloudapi:ChangeUserPasswordType"/>
+
+    <xs:complexType name="ChangeUserPasswordType">
+        <xs:sequence>
+            <xs:element name="password" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="userName" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="deleteUser" type="cloudapi:DeleteUserType"/>
+
+    <xs:complexType name="DeleteUserType">
+        <xs:attribute name="userName" type="xs:string" use="required"/>
+    </xs:complexType>
+
+</xs:schema>

@@ -9,7 +9,7 @@ import com.dimensiondata.cloud.client.OrderBy;
 import com.dimensiondata.cloud.client.Param;
 import com.dimensiondata.cloud.client.model.CustomerImageType;
 import com.dimensiondata.cloud.client.model.CustomerImages;
-import com.dimensiondata.cloud.client.model.ImageMetadataType;
+import com.dimensiondata.cloud.client.model.EditImageMetadataType;
 import com.dimensiondata.cloud.client.model.OsImageType;
 import com.dimensiondata.cloud.client.model.OsImages;
 import com.dimensiondata.cloud.client.model.ResponseType;
@@ -71,10 +71,10 @@ public class ImageServiceImpl implements ImageService
     }
 
     @Override
-    public ResponseType editImageMetadata(ImageMetadataType imageMetadata)
+    public ResponseType editImageMetadata(EditImageMetadataType imageMetadata)
     {
         return httpClient.post("image/editImageMetadata",
-                new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "imageMetadata"), ImageMetadataType.class, imageMetadata),
+                new JAXBElement<>(new QName(HttpClient.DEFAULT_NAMESPACE, "imageMetadata"), EditImageMetadataType.class, imageMetadata),
                 ResponseType.class);
     }
 }

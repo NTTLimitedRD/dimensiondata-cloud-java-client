@@ -37,7 +37,7 @@ public class IpAddressServiceDemo
             ReservedPrivateIpv4Addresses reservedPrivateIpv4Addresses = ipAddressService.listReservedPrivateIpv4Addresses(100, 1, OrderBy.EMPTY, Filter.EMPTY);
             for (ReservedPrivateIpv4AddressType reservedPrivateIpv4Address : reservedPrivateIpv4Addresses.getIpv4())
             {
-                System.out.println("reservedPrivateIpv4Address=" + reservedPrivateIpv4Address.getValue());
+                System.out.println("reservedPrivateIpv4Address=" + reservedPrivateIpv4Address.getIpAddress());
             }
 
             ReservedPublicIpv4Addresses reservedPublicIpv4Addresses = ipAddressService.listReservedPublicIpv4Addresses(100, 1, OrderBy.EMPTY, new Filter(

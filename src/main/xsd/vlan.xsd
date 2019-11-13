@@ -41,6 +41,7 @@
         </xs:sequence>
         <xs:attribute name="id" type="xs:string" use="required"/>
         <xs:attribute name="datacenterId" type="xs:string" use="required"/>
+        <xs:attribute name="small" type="xs:boolean" use="required"/>
     </xs:complexType>
 
     <xs:element name="deployVlan" type="cloudapi:DeployVlanType"/>
